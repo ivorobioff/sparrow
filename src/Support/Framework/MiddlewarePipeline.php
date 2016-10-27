@@ -1,6 +1,5 @@
 <?php
 namespace ImmediateSolutions\Support\Framework;
-use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -35,27 +34,27 @@ class MiddlewarePipeline
     }
 
     /**
-     * @param RequestInterface $request
+     * @param  mixed $context
      * @return ResponseInterface
      */
-    public function handle(RequestInterface $request)
+    public function handle($context)
     {
         $middlewares = array_reverse($this->middlewares);
 
         $first = array_shift($middlewares);
 
-        $first = function(RequestInterface $request) use ($first){
+        $first = function($context) use ($first){
             return $this->resolveMiddleware($first)
-                ->handle($request, function(){});
+                ->handle($context, function(){});
         };
 
         $onion = array_reduce($middlewares, function(callable $carry, $middleware){
-                return function(RequestInterface $request) use ($carry, $middleware){
-                    return $this->resolveMiddleware($middleware)->handle($request, $carry);
+                return function($context) use ($carry, $middleware){
+                    return $this->resolveMiddleware($middleware)->handle($context, $carry);
                 };
         }, $first);
 
-        return $onion($request);
+        return $onion($context);
     }
 
     /**

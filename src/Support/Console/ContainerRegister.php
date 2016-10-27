@@ -1,5 +1,6 @@
 <?php
 namespace ImmediateSolutions\Support\Console;
+use ImmediateSolutions\Support\Framework\CommandRegisterInterface;
 use ImmediateSolutions\Support\Framework\ContainerPopulatorInterface;
 use ImmediateSolutions\Support\Framework\ContainerRegisterInterface;
 
@@ -13,6 +14,7 @@ class ContainerRegister implements ContainerRegisterInterface
      */
     public function register(ContainerPopulatorInterface $populator)
     {
-        // TODO: Implement register() method.
+        $populator
+            ->instance(CommandRegisterInterface::class, CommandRegister::class);
     }
 }

@@ -1,5 +1,6 @@
 <?php
 namespace ImmediateSolutions\Support\Framework;
+use Psr\Http\Message\RequestInterface;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\Diactoros\Response\SapiEmitter;
 
@@ -30,13 +31,16 @@ class Web
     {
         $this->container = new Container();
 
+        $request = ServerRequestFactory::fromGlobals();
+
         $this->container->alias(ContainerInterface::class, $this->container);
+        $this->container->alias(RequestInterface::class, $request);
 
         $this->container->instance(DispatcherInterface::class, Dispatcher::class);
 
         $this->containerRegister->register($this->container);
 
-        $middlewarePipeline = new MiddlewarePipeline($this->container);
+        $pipeline = new MiddlewarePipeline($this->container);
 
         if ($this->container->has(MiddlewareRegisterInterface::class)){
 
@@ -45,14 +49,12 @@ class Web
              */
             $middlewareRegister = $this->container->get(MiddlewareRegisterInterface::class);
 
-            $middlewareRegister->register($middlewarePipeline);
+            $middlewareRegister->register($pipeline);
         }
 
-        $middlewarePipeline->add(DispatcherMiddleware::class);
+        $pipeline->add(DispatcherMiddleware::class);
 
-        $request = ServerRequestFactory::fromGlobals();
-
-        $response = $middlewarePipeline->handle($request);
+        $response = $pipeline->handle($request);
 
         $emitter = new SapiEmitter();
         $emitter->emit($response);

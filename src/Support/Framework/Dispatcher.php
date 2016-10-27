@@ -61,11 +61,8 @@ class Dispatcher implements DispatcherInterface
             throw new MethodNotAllowedHttpException();
         }
 
-        $action = $result[1];
-        $arguments = $result[2];
-
-        if (!is_callable($action)){
-            list($controller, $method) = explode('@', $action);
+        if (!is_callable($result[1])){
+            list($controller, $method) = explode('@', $result[1]);
 
             if (!class_exists($controller)){
                 throw new NotFoundHttpException();
@@ -77,9 +74,25 @@ class Dispatcher implements DispatcherInterface
                 throw new MethodNotAllowedHttpException();
             }
 
-            $action = [$controller, $method];
+            $action = new Action([$controller, $method], $result[2]);
+        } else {
+            $action = new Action($result[1], $result[2]);
         }
 
-        return $this->container->call($action, $arguments);
+        $pipeline = new MiddlewarePipeline($this->container);
+
+        if ($this->container->has(ActionMiddlewareRegisterInterface::class)){
+
+            /**
+             * @var ActionMiddlewareRegisterInterface $middlewareRegister
+             */
+            $middlewareRegister = $this->container->get(ActionMiddlewareRegisterInterface::class);
+
+            $middlewareRegister->register($pipeline);
+        }
+
+        $pipeline->add(ActionMiddleware::class);
+
+        return $pipeline->handle($action);
     }
 }
