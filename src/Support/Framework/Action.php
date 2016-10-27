@@ -1,5 +1,6 @@
 <?php
 namespace ImmediateSolutions\Support\Framework;
+use Psr\Http\Message\RequestInterface;
 
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>
@@ -17,6 +18,11 @@ class Action
     private $callback;
 
     /**
+     * @var RequestInterface
+     */
+    private $request;
+
+    /**
      * @param callable $callback
      * @param array $arguments
      */
@@ -25,6 +31,7 @@ class Action
         $this->callback = $callback;
         $this->arguments = $arguments;
     }
+
     /**
      * @return callable
      */
@@ -39,5 +46,21 @@ class Action
     public function getArguments()
     {
         return $this->arguments;
+    }
+
+    /**
+     * @param RequestInterface $request
+     */
+    public function setRequest(RequestInterface $request)
+    {
+        $this->request = $request;
+    }
+
+    /**
+     * @return RequestInterface
+     */
+    public function getRequest()
+    {
+        return $this->request;
     }
 }

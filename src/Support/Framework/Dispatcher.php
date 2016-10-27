@@ -79,6 +79,8 @@ class Dispatcher implements DispatcherInterface
             $action = new Action($result[1], $result[2]);
         }
 
+        $action->setRequest($request);
+
         $pipeline = new MiddlewarePipeline($this->container);
 
         if ($this->container->has(ActionMiddlewareRegisterInterface::class)){
