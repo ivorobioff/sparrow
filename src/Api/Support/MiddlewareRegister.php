@@ -1,5 +1,5 @@
 <?php
-namespace ImmediateSolutions\Support\Web;
+namespace ImmediateSolutions\Api\Support;
 use ImmediateSolutions\Support\Framework\MiddlewarePipeline;
 use ImmediateSolutions\Support\Framework\MiddlewareRegisterInterface;
 
@@ -13,6 +13,6 @@ class MiddlewareRegister implements MiddlewareRegisterInterface
      */
     public function register(MiddlewarePipeline $pipeline)
     {
-        $pipeline->add(ExceptionMiddleware::class);
+        //
     }
 }

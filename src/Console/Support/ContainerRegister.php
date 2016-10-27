@@ -1,5 +1,5 @@
 <?php
-namespace ImmediateSolutions\Support\Console;
+namespace ImmediateSolutions\Console\Support;
 use ImmediateSolutions\Support\Framework\CommandRegisterInterface;
 use ImmediateSolutions\Support\Framework\ContainerPopulatorInterface;
 use ImmediateSolutions\Support\Framework\ContainerRegisterInterface;

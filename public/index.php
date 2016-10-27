@@ -4,7 +4,7 @@
  */
 
 use ImmediateSolutions\Support\Framework\Web;
-use ImmediateSolutions\Support\Web\ContainerRegister;
+use ImmediateSolutions\Api\Support\ContainerRegister;
 
 require __DIR__.'/../vendor/autoload.php';
 

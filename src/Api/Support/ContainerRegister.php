@@ -1,6 +1,7 @@
 <?php
-namespace ImmediateSolutions\Support\Web;
+namespace ImmediateSolutions\Api\Support;
 use ImmediateSolutions\Api\Support\RouteRegister;
+use ImmediateSolutions\Support\Framework\ActionMiddlewareRegisterInterface;
 use ImmediateSolutions\Support\Framework\ConfigProviderInterface;
 use ImmediateSolutions\Support\Framework\ContainerPopulatorInterface;
 use ImmediateSolutions\Support\Framework\ContainerRegisterInterface;
@@ -20,6 +21,7 @@ class ContainerRegister implements ContainerRegisterInterface
         $populator
             ->instance(RouteRegisterInterface::class, RouteRegister::class)
             ->instance(ConfigProviderInterface::class, ConfigProvider::class)
-            ->instance(MiddlewareRegisterInterface::class, MiddlewareRegister::class);
+            ->instance(MiddlewareRegisterInterface::class, MiddlewareRegister::class)
+            ->instance(ActionMiddlewareRegisterInterface::class, ActionMiddlewareRegister::class);
     }
 }

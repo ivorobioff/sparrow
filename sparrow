@@ -7,6 +7,6 @@
 require __DIR__.'/vendor/autoload.php';
 
 use ImmediateSolutions\Support\Framework\Console;
-use ImmediateSolutions\Support\Console\ContainerRegister;
+use ImmediateSolutions\Console\Support\ContainerRegister;
 
 ( new Console(new ContainerRegister()))->run();

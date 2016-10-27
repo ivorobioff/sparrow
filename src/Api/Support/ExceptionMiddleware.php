@@ -1,5 +1,5 @@
 <?php
-namespace ImmediateSolutions\Support\Web;
+namespace ImmediateSolutions\Api\Support;
 use ImmediateSolutions\Support\Framework\MiddlewareInterface;
 use Psr\Http\Message\RequestInterface;
 use ImmediateSolutions\Support\Framework\Exceptions\AbstractHttpException;

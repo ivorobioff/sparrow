@@ -9,6 +9,24 @@ use ImmediateSolutions\Core\Thing\Payloads\ThingPayload;
 class ThingService
 {
     /**
+     * @param int $id
+     * @return Thing
+     */
+    public function get($id)
+    {
+        return new Thing();
+    }
+
+    /**
+     * @param int $userId
+     * @return Thing[]
+     */
+    public function getAll($userId)
+    {
+        return [];
+    }
+
+    /**
      * @param ThingPayload $payload
      * @return Thing
      */
