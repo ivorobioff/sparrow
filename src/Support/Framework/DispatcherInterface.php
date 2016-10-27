@@ -5,12 +5,10 @@ use Psr\Http\Message\RequestInterface;
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>
  */
-interface MiddlewareInterface
+interface DispatcherInterface
 {
     /**
      * @param RequestInterface $request
-     * @param callable $next
-     * @return mixed
      */
-    public function handle(RequestInterface $request, callable $next);
+    public function dispatch(RequestInterface $request);
 }

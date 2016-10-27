@@ -3,7 +3,9 @@
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>
  */
 
-use ImmediateSolutions\Support\Framework\Application;
-use ImmediateSolutions\Support\Application\ContainerRegister;
+use ImmediateSolutions\Support\Framework\Web;
+use ImmediateSolutions\Support\Web\ContainerRegister;
 
-(new Application(new ContainerRegister()))->run();
+require __DIR__.'/../vendor/autoload.php';
+
+(new Web(new ContainerRegister()))->run();

@@ -7,7 +7,7 @@ namespace ImmediateSolutions\Support\Framework;
 interface MiddlewareRegisterInterface
 {
     /**
-     * @param MiddlewareProcessor $processor
+     * @param MiddlewarePipeline $pipeline
      */
-    public function register(MiddlewareProcessor $processor);
+    public function register(MiddlewarePipeline $pipeline);
 }

@@ -1,0 +1,12 @@
+#!/usr/bin/env php
+<?php
+/**
+ * @author Igor Vorobiov<igor.vorobioff@gmail.com>
+ */
+
+require __DIR__.'/vendor/autoload.php';
+
+use ImmediateSolutions\Support\Framework\Console;
+use ImmediateSolutions\Support\Console\ContainerRegister;
+
+( new Console(new ContainerRegister()))->run();

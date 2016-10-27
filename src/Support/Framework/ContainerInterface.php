@@ -8,6 +8,7 @@ interface ContainerInterface
 {
     /**
      * @param string $id
+     * @return mixed
      */
     public function get($id);
 
@@ -19,7 +20,8 @@ interface ContainerInterface
 
     /**
      * @param callable $callback
+     * @param array $arguments
      * @return mixed
      */
-    public function call(callable $callback);
+    public function call(callable $callback, array $arguments = []);
 }

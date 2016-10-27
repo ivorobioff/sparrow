@@ -1,5 +1,5 @@
 <?php
-namespace ImmediateSolutions\Support\Application;
+namespace ImmediateSolutions\Support\Web;
 use ImmediateSolutions\Support\Framework\ConfigProviderInterface;
 
 /**

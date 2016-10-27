@@ -1,11 +1,23 @@
 <?php
 namespace ImmediateSolutions\Support\Framework;
 
+use Illuminate\Container\Container as Laravel;
+
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>
  */
 class Container implements ContainerPopulatorInterface, ContainerInterface
 {
+    /**
+     * @var Laravel
+     */
+    private $laravel;
+
+    public function __construct()
+    {
+        $this->laravel = new Laravel();
+    }
+
     /**
      * @param string $target
      * @param callable|string $source
@@ -13,7 +25,8 @@ class Container implements ContainerPopulatorInterface, ContainerInterface
      */
     public function service($target, $source)
     {
-        // TODO: Implement service() method.
+        $this->laravel->singleton($target, $source);
+        return $this;
     }
 
     /**
@@ -23,15 +36,42 @@ class Container implements ContainerPopulatorInterface, ContainerInterface
      */
     public function instance($target, $source)
     {
-        // TODO: Implement instance() method.
+        $this->laravel->bind($target, $source);
+        return $this;
+    }
+
+    /**
+     * @param string $target
+     * @param object $instance
+     * @return $this
+     */
+    public function alias($target, $instance)
+    {
+        $this->laravel->instance($target, $instance);
+        return $this;
+    }
+
+    /**
+     * @param string $target
+     * @param callable $initializer
+     * @return $this
+     */
+    public function initialize($target, callable $initializer)
+    {
+        $this->laravel->resolving($target, function($instance) use ($initializer){
+            $initializer($instance);
+        });
+
+        return $this;
     }
 
     /**
      * @param string $id
+     * @return bool
      */
     public function get($id)
     {
-        // TODO: Implement get() method.
+        return $this->laravel->make($id);
     }
 
     /**
@@ -40,15 +80,16 @@ class Container implements ContainerPopulatorInterface, ContainerInterface
      */
     public function has($id)
     {
-        // TODO: Implement has() method.
+        return $this->laravel->bound($id);
     }
 
     /**
      * @param callable $callback
+     * @param array $arguments
      * @return mixed
      */
-    public function call(callable $callback)
+    public function call(callable $callback, array $arguments = [])
     {
-        // TODO: Implement call() method.
+        return $this->laravel->call($callback, $arguments);
     }
 }

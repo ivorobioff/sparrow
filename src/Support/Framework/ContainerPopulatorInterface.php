@@ -22,6 +22,13 @@ interface ContainerPopulatorInterface
 
     /**
      * @param string $target
+     * @param object $instance
+     * @return $this
+     */
+    public function alias($target, $instance);
+
+    /**
+     * @param string $target
      * @param callable $initializer
      * @return $this
      */

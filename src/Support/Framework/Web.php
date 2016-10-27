@@ -1,15 +1,12 @@
 <?php
 namespace ImmediateSolutions\Support\Framework;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
-use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\Diactoros\Response\SapiEmitter;
 
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>
  */
-class Application implements MiddlewareInterface
+class Web
 {
     /**
      * @var ContainerRegisterInterface
@@ -33,14 +30,13 @@ class Application implements MiddlewareInterface
     {
         $this->container = new Container();
 
-        $this->container->initialize(ContainerAwareInterface::class,
-            function(ContainerAwareInterface $instance, ContainerInterface $container){
-                $instance->setContainer($container);
-            });
+        $this->container->alias(ContainerInterface::class, $this->container);
+
+        $this->container->instance(DispatcherInterface::class, Dispatcher::class);
 
         $this->containerRegister->register($this->container);
 
-        $middlewareProcessor = new MiddlewareProcessor($this->container);
+        $middlewarePipeline = new MiddlewarePipeline($this->container);
 
         if ($this->container->has(MiddlewareRegisterInterface::class)){
 
@@ -49,31 +45,16 @@ class Application implements MiddlewareInterface
              */
             $middlewareRegister = $this->container->get(MiddlewareRegisterInterface::class);
 
-            $middlewareRegister->register($middlewareProcessor);
+            $middlewareRegister->register($middlewarePipeline);
         }
 
-        $middlewareProcessor->register($this);
+        $middlewarePipeline->add(DispatcherMiddleware::class);
 
         $request = ServerRequestFactory::fromGlobals();
-        $response = new Response();
 
-        $middlewareProcessor->process($request, $response);
+        $response = $middlewarePipeline->handle($request);
 
         $emitter = new SapiEmitter();
         $emitter->emit($response);
-    }
-
-
-    /**
-     * @param RequestInterface $request
-     * @param ResponseInterface $response
-     * @param callable $next
-     * @return mixed
-     */
-    public function __invoke(RequestInterface $request, ResponseInterface $response, callable $next = null)
-    {
-        if (!$next){
-            return $response;
-        }
     }
 }
