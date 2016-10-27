@@ -33,8 +33,8 @@ class Web
 
         $this->container->alias(ContainerInterface::class, $this->container);
 
-        $request = ServerRequestFactory::fromGlobals();
-        $request = new Request($request);
+        $request = new Request(ServerRequestFactory::fromGlobals());
+
         $this->container->alias(RequestInterface::class, $request);
 
         $this->container->instance(DispatcherInterface::class, Dispatcher::class);
