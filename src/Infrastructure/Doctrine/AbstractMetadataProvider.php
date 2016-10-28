@@ -1,5 +1,5 @@
 <?php
-namespace ImmediateSolutions\Infrastructure\Support\Doctrine;
+namespace ImmediateSolutions\Infrastructure\Doctrine;
 
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>

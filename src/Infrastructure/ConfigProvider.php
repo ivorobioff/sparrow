@@ -1,5 +1,5 @@
 <?php
-namespace ImmediateSolutions\Api\Support;
+namespace ImmediateSolutions\Infrastructure;
 use ImmediateSolutions\Support\Framework\ConfigProviderInterface;
 
 /**
@@ -12,6 +12,6 @@ class ConfigProvider implements ConfigProviderInterface
      */
     public function getConfig()
     {
-        return [];
+         require __DIR__.'/../../config/config.php';
     }
 }

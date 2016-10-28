@@ -2,6 +2,7 @@
 namespace ImmediateSolutions\Support\Framework;
 
 use Illuminate\Container\Container as Laravel;
+use Closure;
 
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>
@@ -25,7 +26,7 @@ class Container implements ContainerPopulatorInterface, ContainerInterface
      */
     public function service($target, $source)
     {
-        $this->laravel->singleton($target, $source);
+        $this->laravel->singleton($target, $this->protectSource($source));
         return $this;
     }
 
@@ -36,7 +37,7 @@ class Container implements ContainerPopulatorInterface, ContainerInterface
      */
     public function instance($target, $source)
     {
-        $this->laravel->bind($target, $source);
+        $this->laravel->bind($target, $this->protectSource($source));
         return $this;
     }
 
@@ -59,10 +60,25 @@ class Container implements ContainerPopulatorInterface, ContainerInterface
     public function initialize($target, callable $initializer)
     {
         $this->laravel->resolving($target, function($instance) use ($initializer){
-            $initializer($instance);
+            $initializer($instance, $this);
         });
 
         return $this;
+    }
+
+    /**
+     * @param string|callable $source
+     * @return Closure
+     */
+    private function protectSource($source)
+    {
+        if (is_callable($source)){
+            return function() use ($source){
+                return $source($this);
+            };
+        }
+
+        return $source;
     }
 
     /**

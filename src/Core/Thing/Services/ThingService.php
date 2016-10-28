@@ -1,12 +1,13 @@
 <?php
 namespace ImmediateSolutions\Core\Thing\Services;
+use ImmediateSolutions\Core\Support\Service\AbstractService;
 use ImmediateSolutions\Core\Thing\Entities\Thing;
 use ImmediateSolutions\Core\Thing\Payloads\ThingPayload;
 
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>
  */
-class ThingService
+class ThingService extends AbstractService
 {
     /**
      * @param int $id
