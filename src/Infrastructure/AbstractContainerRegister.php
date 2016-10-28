@@ -19,7 +19,7 @@ abstract class AbstractContainerRegister implements ContainerRegisterInterface
     {
         $populator
             ->service('config', function(){
-                return new Config(require __DIR__.'/../../config/config.php');
+                return new Config(APP_PATH.'/config/config.php');
             })
 
             ->service('doctrine:configuration', new DoctrineConfigurationFactory())
