@@ -1,8 +1,6 @@
 <?php
 namespace ImmediateSolutions\Infrastructure;
 use Doctrine\ORM\EntityManagerInterface;
-use ImmediateSolutions\Infrastructure\Doctrine\DoctrineConfigurationFactory;
-use ImmediateSolutions\Infrastructure\Doctrine\DoctrineConnectionFactory;
 use ImmediateSolutions\Infrastructure\Doctrine\EntityManagerFactory;
 use ImmediateSolutions\Support\Framework\ContainerPopulatorInterface;
 use ImmediateSolutions\Support\Framework\ContainerRegisterInterface;
@@ -21,9 +19,6 @@ abstract class AbstractContainerRegister implements ContainerRegisterInterface
             ->service('config', function(){
                 return new Config(APP_PATH.'/config/config.php');
             })
-
-            ->service('doctrine:configuration', new DoctrineConfigurationFactory())
-            ->service('doctrine:connection', DoctrineConnectionFactory::getFactoryByContainer())
             ->service(EntityManagerInterface::class, new EntityManagerFactory());
     }
 }

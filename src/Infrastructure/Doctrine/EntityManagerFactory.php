@@ -8,6 +8,16 @@ use Doctrine\ORM\Configuration;
 use Doctrine\DBAL\Types\Type;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+use ImmediateSolutions\Infrastructure\Doctrine\Metadata\SimpleDriver;
+use Doctrine\ORM\Mapping\UnderscoreNamingStrategy;
+use Doctrine\ORM\Tools\Setup;
+use ImmediateSolutions\Infrastructure\Doctrine\Metadata\CompositeDriver;
+use ImmediateSolutions\Infrastructure\Doctrine\Metadata\PackageDriver;
+use DoctrineExtensions\Query\Mysql\Year as MysqlYear;
+use DoctrineExtensions\Query\Sqlite\Year as SqliteYear;
+use DoctrineExtensions\Query\Mysql\Month as MysqlMonth;
+use DoctrineExtensions\Query\Sqlite\Month as SqliteMonth;
+use RuntimeException;
 
 
 /**
@@ -21,35 +31,62 @@ class EntityManagerFactory
      */
     public function __invoke(ContainerInterface $container)
     {
-        /**
-         * @var Connection $connection
-         */
-        $connection = $container->get('doctrine:connection');
+        $config = $container->get('config')->get('doctrine');
+        $packages = $container->get('config')->get('packages');
 
-        /**
-         * @var Configuration $configuration
-         */
-        $configuration = $container->get('doctrine:configuration');
+        $em = EntityManager::create(
+            $config['connections'][$config['db']],
+            $this->createConfiguration($config, $packages)
+        );
 
-        return $this->createEntityManager($connection, $configuration, $container);
+        $this->registerTypes(
+            $em->getConnection(),
+            $packages,
+            $container->get('config')->get('doctrine.types', [])
+        );
+
+        return $em;
     }
 
     /**
-     *
-     * @param Connection $connection
-     * @param Configuration $configuration
-     * @param ContainerInterface $container
-     * @return EntityManagerInterface
+     * @param array $config
+     * @param array $packages
+     * @return Configuration
      */
-    private function createEntityManager(Connection $connection, Configuration $configuration, ContainerInterface $container)
+    private function createConfiguration(array $config, array $packages)
     {
-        $packages = $container->get('config')->get('packages');
+        $setup = Setup::createConfiguration();
 
-        $em = EntityManager::create($connection, $configuration);
+        $cache = new $config['cache']();
 
-        $this->registerTypes($em->getConnection(), $packages, $container->get('config')->get('doctrine.types', []));
+        $setup->setMetadataCacheImpl($cache);
+        $setup->setQueryCacheImpl($cache);
 
-        return $em;
+        $setup->setProxyDir($config['proxy']['dir']);
+        $setup->setProxyNamespace($config['proxy']['namespace']);
+        $setup->setAutoGenerateProxyClasses(array_get($config, 'proxy.auto', false));
+
+        $setup->setMetadataDriverImpl(new CompositeDriver([
+            new PackageDriver($packages),
+            new SimpleDriver(array_get($config, 'entities', []))
+        ]));
+
+        $setup->setNamingStrategy(new UnderscoreNamingStrategy());
+        $setup->setDefaultRepositoryClassName(DefaultRepository::class);
+
+        $driver = $config['connections'][$config['db']]['driver'];
+
+        if ($driver == 'pdo_sqlite'){
+            $setup->addCustomDatetimeFunction('YEAR', SqliteYear::class);
+            $setup->addCustomDatetimeFunction('MONTH', SqliteMonth::class);
+        } else if ($driver == 'pdo_mysql'){
+            $setup->addCustomDatetimeFunction('YEAR', MysqlYear::class);
+            $setup->addCustomDatetimeFunction('MONTH', MysqlMonth::class);
+        } else {
+            throw new RuntimeException('Unable to add functions under unknown driver "'.$driver.'".');
+        }
+
+        return $setup;
     }
 
     /**
