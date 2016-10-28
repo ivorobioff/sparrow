@@ -1,9 +1,7 @@
 <?php
 namespace ImmediateSolutions\Console\Support;
 use ImmediateSolutions\Infrastructure\AbstractContainerRegister;
-use ImmediateSolutions\Infrastructure\ConfigProvider;
 use ImmediateSolutions\Support\Framework\CommandRegisterInterface;
-use ImmediateSolutions\Support\Framework\ConfigProviderInterface;
 use ImmediateSolutions\Support\Framework\ContainerPopulatorInterface;
 
 /**
@@ -19,7 +17,6 @@ class ContainerRegister extends AbstractContainerRegister
         parent::register($populator);
 
         $populator
-            ->instance(ConfigProviderInterface::class, ConfigProvider::class)
             ->instance(CommandRegisterInterface::class, CommandRegister::class);
     }
 }
