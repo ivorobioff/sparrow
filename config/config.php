@@ -25,11 +25,11 @@ return [
         'cache' => Doctrine\Common\Cache\ArrayCache::class,
         'proxy' => [
             'auto' => Doctrine\Common\Proxy\AbstractProxyFactory::AUTOGENERATE_ALWAYS,
-            'dir' => __DIR__.'/../.sparrow/proxies',
+            'dir' => APP_PATH.'/.sparrow/proxies',
             'namespace' => 'ImmediateSolutions\Temp\Proxies'
         ],
         'migrations' => [
-            'dir' => __DIR__.'/../migrations',
+            'dir' => APP_PATH.'/migrations',
             'namespace' => 'ImmediateSolutions\Migrations',
             'table' => 'migrations'
         ],

@@ -21,6 +21,7 @@ abstract class AbstractContainerRegister implements ContainerRegisterInterface
             ->service('doctrine:configuration', new DoctrineConfigurationFactory())
             ->service('doctrine:connection', new DoctrineConnectionFactory())
             ->service(EntityManagerInterface::class, new EntityManagerFactory())
+
             ->service('config', function(){
                 return new Config(require __DIR__.'/../../config/config.php');
             });
