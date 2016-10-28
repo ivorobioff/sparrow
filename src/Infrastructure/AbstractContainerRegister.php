@@ -18,12 +18,12 @@ abstract class AbstractContainerRegister implements ContainerRegisterInterface
     public function register(ContainerPopulatorInterface $populator)
     {
         $populator
-            ->service('doctrine:configuration', new DoctrineConfigurationFactory())
-            ->service('doctrine:connection', new DoctrineConnectionFactory())
-            ->service(EntityManagerInterface::class, new EntityManagerFactory())
-
             ->service('config', function(){
                 return new Config(require __DIR__.'/../../config/config.php');
-            });
+            })
+
+            ->service('doctrine:configuration', new DoctrineConfigurationFactory())
+            ->service('doctrine:connection', DoctrineConnectionFactory::getFactoryByContainer())
+            ->service(EntityManagerInterface::class, new EntityManagerFactory());
     }
 }
