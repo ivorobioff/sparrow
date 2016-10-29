@@ -2,6 +2,7 @@
 namespace ImmediateSolutions\Support\Framework;
 use Symfony\Component\Console\Application as CLI;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\HelperSet;
 
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>
@@ -50,9 +51,17 @@ class Console implements CommandStorageInterface
         }
 
         $cli = new CLI();
+        $cli->setHelperSet(new HelperSet());
 
         foreach ($this->commands as $command){
-            $cli->add($this->resolveCommand($command));
+
+            $command = $this->resolveCommand($command);
+
+            foreach ($command->getHelperSet() as $name => $helper){
+                $cli->getHelperSet()->set($helper, $name);
+            }
+
+            $cli->add($command);
         }
 
         $cli->run();

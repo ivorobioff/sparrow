@@ -1,10 +1,14 @@
 <?php
 namespace ImmediateSolutions\Console\Support;
 
-use Doctrine\ORM\Tools\Console\Command\SchemaTool\CreateCommand;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\Console\Command\SchemaTool\UpdateCommand;
+use Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper;
 use ImmediateSolutions\Support\Framework\CommandRegisterInterface;
 use ImmediateSolutions\Support\Framework\CommandStorageInterface;
+use ImmediateSolutions\Support\Framework\ContainerInterface;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\HelperSet;
 
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>
@@ -12,12 +16,40 @@ use ImmediateSolutions\Support\Framework\CommandStorageInterface;
 class CommandRegister implements CommandRegisterInterface
 {
     /**
+     * @var ContainerInterface
+     */
+    private $container;
+
+    /**
+     * @param ContainerInterface $container
+     */
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+    }
+
+    /**
      * @param CommandStorageInterface $storage
      */
     public function register(CommandStorageInterface $storage)
     {
-        $storage
-            ->add(new CreateCommand())
-            ->add(new UpdateCommand());
+        $storage->add($this->doctrine(UpdateCommand::class));
+    }
+
+    /**
+     * @param string $class
+     * @return Command
+     */
+    private function doctrine($class)
+    {
+        /**
+         * @var Command $command
+         */
+        $command = new $class();
+        $command->setHelperSet(new HelperSet([
+            'em' => new EntityManagerHelper($this->container->get(EntityManagerInterface::class))
+        ]));
+
+        return $command;
     }
 }

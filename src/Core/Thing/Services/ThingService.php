@@ -1,5 +1,6 @@
 <?php
 namespace ImmediateSolutions\Core\Thing\Services;
+
 use ImmediateSolutions\Core\Support\Service\AbstractService;
 use ImmediateSolutions\Core\Thing\Entities\Thing;
 use ImmediateSolutions\Core\Thing\Payloads\ThingPayload;
@@ -9,6 +10,7 @@ use ImmediateSolutions\Core\Thing\Payloads\ThingPayload;
  */
 class ThingService extends AbstractService
 {
+
     /**
      * @param int $id
      * @return Thing
@@ -33,6 +35,12 @@ class ThingService extends AbstractService
      */
     public function create(ThingPayload $payload)
     {
+        $thing = new Thing();
+        $thing->setName($payload->getName());
 
+        $this->entityManager->persist($thing);
+        $this->entityManager->flush();
+
+        return $thing;
     }
 }

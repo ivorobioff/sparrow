@@ -5,5 +5,10 @@ namespace ImmediateSolutions\Core\Thing\Payloads;
  */
 class ThingPayload
 {
-
+    /**
+     * @var string
+     */
+    private $name;
+    public function setName($name) { $this->name = $name; }
+    public function getName() { return $this->name; }
 }

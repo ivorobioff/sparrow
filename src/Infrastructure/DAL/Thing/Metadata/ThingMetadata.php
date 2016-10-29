@@ -15,6 +15,17 @@ class ThingMetadata extends AbstractMetadataProvider
      */
     public function define(ClassMetadataBuilder $builder)
     {
+        $builder->setTable('things');
+
+        $builder
+            ->createField('id', 'integer')
+            ->makePrimaryKey()
+            ->generatedValue()
+            ->build();
+
+        $builder
+            ->createField('name', 'string')
+            ->build();
 
     }
 }

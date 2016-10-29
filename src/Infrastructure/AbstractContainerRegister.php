@@ -19,7 +19,7 @@ abstract class AbstractContainerRegister implements ContainerRegisterInterface
     {
         $populator
             ->service('config', function(){
-                return new Config(APP_PATH.'/config/config.php');
+                return new Config(require  APP_PATH.'/config/config.php');
             })
             ->instance(ResponseFactoryInterface::class, JsonResponseFactory::class)
             ->service(EntityManagerInterface::class, new EntityManagerFactory());

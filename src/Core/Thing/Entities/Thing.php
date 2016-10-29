@@ -6,5 +6,17 @@ namespace ImmediateSolutions\Core\Thing\Entities;
  */
 class Thing
 {
+    /**
+     * @var int
+     */
+    private $id;
+    public function setId($id) { $this->id = $id; }
+    public function getId() { return $this->id; }
 
+    /**
+     * @var string
+     */
+    private $name;
+    public function setName($name) { $this->name = $name; }
+    public function getName() { return $this->name; }
 }

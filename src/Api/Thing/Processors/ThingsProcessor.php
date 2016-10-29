@@ -24,6 +24,9 @@ class ThingsProcessor extends AbstractProcessor
      */
     public function createPayload()
     {
+        $payload = new ThingPayload();
+        $payload->setName($this->get('name'));
 
+        return $payload;
     }
 }

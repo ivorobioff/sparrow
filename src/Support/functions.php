@@ -180,6 +180,21 @@ function starts_with($haystack, $needles)
 }
 
 /**
+ * @param string $haystack
+ * @param string $needles
+ * @return bool
+ */
+function ends_with($haystack, $needles)
+{
+    foreach ((array) $needles as $needle) {
+        if (substr($haystack, -strlen($needle)) === (string) $needle) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
  * Cuts off the specified substring from the beginning of the specified string
  *
  * @param string $string
