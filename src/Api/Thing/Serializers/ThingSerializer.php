@@ -9,6 +9,9 @@ class ThingSerializer
 {
     public function __invoke(Thing $thing)
     {
-        // TODO: Implement __invoke() method.
+        return [
+            'id' => $thing->getId(),
+            'name' => $thing->getName()
+        ];
     }
 }

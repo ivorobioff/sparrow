@@ -14,6 +14,8 @@ class RouteRegister implements RouteRegisterInterface
      */
     public function register(RouterInterface $router)
     {
-        $router->get('/things', ThingsController::class.'@index');
+        $router
+            ->get('/things', ThingsController::class.'@index')
+            ->post('/things', ThingsController::class.'@store');
     }
 }

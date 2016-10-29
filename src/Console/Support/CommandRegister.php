@@ -33,19 +33,15 @@ class CommandRegister implements CommandRegisterInterface
      */
     public function register(CommandStorageInterface $storage)
     {
-        $storage->add($this->doctrine(UpdateCommand::class));
+        $storage->add($this->withinDoctrine(new UpdateCommand()));
     }
 
     /**
-     * @param string $class
+     * @param Command $command
      * @return Command
      */
-    private function doctrine($class)
+    private function withinDoctrine(Command $command)
     {
-        /**
-         * @var Command $command
-         */
-        $command = new $class();
         $command->setHelperSet(new HelperSet([
             'em' => new EntityManagerHelper($this->container->get(EntityManagerInterface::class))
         ]));

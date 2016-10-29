@@ -46,6 +46,8 @@ abstract class AbstractProcessor
 
             if ($data === null){
                 $this->data = [];
+            } else {
+                $this->data = $data;
             }
         }
 

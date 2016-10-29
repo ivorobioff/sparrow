@@ -15,6 +15,12 @@ class JsonResponseFactory implements ResponseFactoryInterface
      */
     public function create($content, $status)
     {
-        return new Response(json_encode($content), $status, ['Content-Type' => 'application/json']);
+        $response = new Response('php://memory', $status, ['Content-Type' => 'application/json']);
+
+        if ($content !== null){
+            $response->getBody()->write(json_encode($content));
+        }
+
+        return $response;
     }
 }
