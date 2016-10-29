@@ -1,5 +1,5 @@
 <?php
-namespace ImmediateSolutions\Support\Rest\Kangaroo\Response;
+namespace ImmediateSolutions\Support\Rest;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -8,8 +8,8 @@ use Psr\Http\Message\ResponseInterface;
 interface ResponseFactoryInterface
 {
     /**
-     * @param string $content
-     * @param string $status
+     * @param mixed $content
+     * @param int $status
      * @return ResponseInterface
      */
     public function create($content, $status);

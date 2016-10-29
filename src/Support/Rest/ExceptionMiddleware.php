@@ -1,9 +1,7 @@
 <?php
-namespace ImmediateSolutions\Api\Support;
+namespace ImmediateSolutions\Support\Rest;
 use ImmediateSolutions\Support\Framework\MiddlewareInterface;
 use Psr\Http\Message\RequestInterface;
-use ImmediateSolutions\Support\Framework\Exceptions\AbstractHttpException;
-use Zend\Diactoros\Response;
 
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>
@@ -17,13 +15,6 @@ class ExceptionMiddleware implements MiddlewareInterface
      */
     public function handle(RequestInterface $request, callable $next)
     {
-        try {
-            $response = $next($request);
-        } catch (AbstractHttpException $ex){
-            $response = new Response();
-            $response->getBody()->write('Oh shit.. the error just happened.');
-        }
-
-        return $response;
+        // TODO: Implement handle() method.
     }
 }

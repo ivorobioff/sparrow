@@ -4,6 +4,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use ImmediateSolutions\Infrastructure\Doctrine\EntityManagerFactory;
 use ImmediateSolutions\Support\Framework\ContainerPopulatorInterface;
 use ImmediateSolutions\Support\Framework\ContainerRegisterInterface;
+use ImmediateSolutions\Support\Rest\JsonResponseFactory;
+use ImmediateSolutions\Support\Rest\ResponseFactoryInterface;
 
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>
@@ -19,6 +21,7 @@ abstract class AbstractContainerRegister implements ContainerRegisterInterface
             ->service('config', function(){
                 return new Config(APP_PATH.'/config/config.php');
             })
+            ->instance(ResponseFactoryInterface::class, JsonResponseFactory::class)
             ->service(EntityManagerInterface::class, new EntityManagerFactory());
     }
 }

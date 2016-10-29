@@ -1,5 +1,5 @@
 <?php
-namespace ImmediateSolutions\Support\Rest\Kangaroo\Response;
+namespace ImmediateSolutions\Support\Rest;
 use Psr\Http\Message\ResponseInterface;
 use Zend\Diactoros\Response;
 
@@ -9,8 +9,8 @@ use Zend\Diactoros\Response;
 class JsonResponseFactory implements ResponseFactoryInterface
 {
     /**
-     * @param string $content
-     * @param string $status
+     * @param array $content
+     * @param int $status
      * @return ResponseInterface
      */
     public function create($content, $status)
