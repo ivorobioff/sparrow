@@ -35,6 +35,10 @@ abstract class AbstractController
         $this->container = $container;
         $this->reply = $container->get(Reply::class);
         $this->request = $container->get(RequestInterface::class);
+
+        if (method_exists($this, 'initialize')){
+            $this->container->call([$this, 'initialize']);
+        }
     }
 
     /**
