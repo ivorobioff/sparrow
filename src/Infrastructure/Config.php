@@ -11,6 +11,9 @@ class Config
      */
     private $source = [];
 
+    /**
+     * @param array $source
+     */
     public function __construct(array $source)
     {
         $this->source = $source;

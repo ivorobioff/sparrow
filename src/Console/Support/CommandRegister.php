@@ -1,6 +1,8 @@
 <?php
 namespace ImmediateSolutions\Console\Support;
 
+use Doctrine\ORM\Tools\Console\Command\SchemaTool\CreateCommand;
+use Doctrine\ORM\Tools\Console\Command\SchemaTool\UpdateCommand;
 use ImmediateSolutions\Support\Framework\CommandRegisterInterface;
 use ImmediateSolutions\Support\Framework\CommandStorageInterface;
 
@@ -14,6 +16,8 @@ class CommandRegister implements CommandRegisterInterface
      */
     public function register(CommandStorageInterface $storage)
     {
-
+        $storage
+            ->add(new CreateCommand())
+            ->add(new UpdateCommand());
     }
 }

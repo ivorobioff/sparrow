@@ -8,6 +8,9 @@ use ImmediateSolutions\Support\Framework\MiddlewarePipeline;
  */
 class ActionMiddlewareRegister implements ActionMiddlewareRegisterInterface
 {
+    /**
+     * @param MiddlewarePipeline $pipeline
+     */
     public function register(MiddlewarePipeline $pipeline)
     {
 
