@@ -1,5 +1,5 @@
 <?php
-namespace ImmediateSolutions\Core\Support\Service;
+namespace ImmediateSolutions\Support\Core\Service;
 
 use Doctrine\Common\Persistence\ObjectRepository;
 

@@ -3,7 +3,7 @@ namespace ImmediateSolutions\Infrastructure\Doctrine;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
-use ImmediateSolutions\Core\Support\Service\RepositoryInterface;
+use ImmediateSolutions\Support\Core\Service\RepositoryInterface;
 
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>

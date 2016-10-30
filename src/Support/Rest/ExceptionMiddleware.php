@@ -4,6 +4,8 @@ namespace ImmediateSolutions\Support\Rest;
 use ImmediateSolutions\Support\Framework\ContainerInterface;
 use ImmediateSolutions\Support\Framework\Exceptions\AbstractHttpException;
 use ImmediateSolutions\Support\Framework\MiddlewareInterface;
+use ImmediateSolutions\Support\Validation\Error;
+use ImmediateSolutions\Support\Validation\ErrorsThrowableCollection;
 use Psr\Http\Message\RequestInterface;
 use Exception;
 use Psr\Http\Message\ResponseInterface;
@@ -47,6 +49,19 @@ class ExceptionMiddleware implements MiddlewareInterface
             $response = $next($request);
         } catch (AbstractHttpException $ex) {
             $response = $this->writeHttpException($ex);
+        } catch (ErrorsThrowableCollection $errors){
+
+            $data = [];
+
+            /**
+             * @var Error[] $e
+             */
+            foreach ($errors as $property => $error){
+                $data[$property] = $this->prepareError($error);
+            }
+
+            $response = $this->responseFactory->create($data, 422);
+
         } catch(Exception $exception) {
 
             if ($this->logger){
@@ -79,5 +94,27 @@ class ExceptionMiddleware implements MiddlewareInterface
             'code' => $code,
             'message' => $message
         ], $code);
+    }
+
+
+    /**
+     * @param Error $error
+     * @return array
+     */
+    private function prepareError(Error $error)
+    {
+        $data = [
+            'identifier' => $error->getIdentifier(),
+            'message' => $error->getMessage(),
+            'extra' => []
+        ];
+
+        if ($error->hasExtra()){
+            foreach ($error->getExtra() as $name => $extra){
+                $data['extra'][$name] = $this->prepareError($extra);
+            }
+        }
+
+        return $data;
     }
 }

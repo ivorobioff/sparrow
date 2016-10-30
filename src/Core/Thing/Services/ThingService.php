@@ -1,7 +1,7 @@
 <?php
 namespace ImmediateSolutions\Core\Thing\Services;
 
-use ImmediateSolutions\Core\Support\Service\AbstractService;
+use ImmediateSolutions\Support\Core\Service\AbstractService;
 use ImmediateSolutions\Core\Thing\Entities\Thing;
 use ImmediateSolutions\Core\Thing\Payloads\ThingPayload;
 
