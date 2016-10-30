@@ -6,6 +6,7 @@ use ImmediateSolutions\Support\Framework\ContainerPopulatorInterface;
 use ImmediateSolutions\Support\Framework\ContainerRegisterInterface;
 use ImmediateSolutions\Support\Rest\JsonResponseFactory;
 use ImmediateSolutions\Support\Rest\ResponseFactoryInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>
@@ -22,6 +23,7 @@ abstract class AbstractContainerRegister implements ContainerRegisterInterface
                 return new Config(require  APP_PATH.'/config/config.php');
             })
             ->instance(ResponseFactoryInterface::class, JsonResponseFactory::class)
-            ->service(EntityManagerInterface::class, new EntityManagerFactory());
+            ->service(EntityManagerInterface::class, new EntityManagerFactory())
+            ->service(LoggerInterface::class, new MonologLoggerFactory());
     }
 }

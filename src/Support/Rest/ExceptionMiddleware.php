@@ -1,11 +1,13 @@
 <?php
 namespace ImmediateSolutions\Support\Rest;
 
+use ImmediateSolutions\Support\Framework\ContainerInterface;
 use ImmediateSolutions\Support\Framework\Exceptions\AbstractHttpException;
 use ImmediateSolutions\Support\Framework\MiddlewareInterface;
 use Psr\Http\Message\RequestInterface;
 use Exception;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>
@@ -17,9 +19,21 @@ class ExceptionMiddleware implements MiddlewareInterface
      */
     private $responseFactory;
 
-    public function __construct(ResponseFactoryInterface $responseFactory)
+    /**
+     * @var LoggerInterface $logger
+     */
+    private $logger;
+
+    /**
+     * @param ContainerInterface $container
+     */
+    public function __construct(ContainerInterface $container)
     {
-        $this->responseFactory = $responseFactory;
+        $this->responseFactory = $container->get(ResponseFactoryInterface::class);
+
+        if ($container->has(LoggerInterface::class)){
+            $this->logger = $container->get(LoggerInterface::class);
+        }
     }
 
     /**
@@ -34,6 +48,11 @@ class ExceptionMiddleware implements MiddlewareInterface
         } catch (AbstractHttpException $ex) {
             $response = $this->writeHttpException($ex);
         } catch(Exception $exception) {
+
+            if ($this->logger){
+                $this->logger->critical($exception);
+            }
+
             $response = $this->writeException(500, 'Internal Server Error');
         }
 
