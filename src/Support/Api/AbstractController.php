@@ -5,12 +5,13 @@ use ImmediateSolutions\Support\Pagination\AdapterInterface;
 use ImmediateSolutions\Support\Pagination\Describer;
 use ImmediateSolutions\Support\Pagination\PaginationProviderInterface;
 use ImmediateSolutions\Support\Pagination\Paginator;
+use ImmediateSolutions\Support\Permissions\ProtectableInterface;
 use Psr\Http\Message\RequestInterface;
 
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>
  */
-abstract class AbstractController
+abstract class AbstractController implements ProtectableInterface
 {
     /**
      * @var Reply
