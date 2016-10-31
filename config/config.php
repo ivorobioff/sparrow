@@ -40,5 +40,9 @@ return [
         'types' => [
             //
         ]
+    ],
+
+    'protectors' => [
+        'all' => ImmediateSolutions\Api\Support\Protectors\AllProtector::class
     ]
 ];

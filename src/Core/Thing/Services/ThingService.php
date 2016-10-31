@@ -17,7 +17,7 @@ class ThingService extends AbstractService
      */
     public function get($id)
     {
-        return new Thing();
+        return $this->entityManager->find(Thing::class, $id);
     }
 
     /**
@@ -26,7 +26,7 @@ class ThingService extends AbstractService
      */
     public function getAll($userId)
     {
-        return [];
+        return $this->entityManager->getRepository(Thing::class)->findAll();
     }
 
     /**

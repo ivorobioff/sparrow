@@ -2,6 +2,7 @@
 namespace ImmediateSolutions\Support\Api;
 
 use ImmediateSolutions\Support\Framework\ContainerInterface;
+use ImmediateSolutions\Support\Framework\EnvironmentInterface;
 use ImmediateSolutions\Support\Framework\Exceptions\AbstractHttpException;
 use ImmediateSolutions\Support\Framework\MiddlewareInterface;
 use ImmediateSolutions\Support\Validation\Error;
@@ -27,6 +28,11 @@ class ExceptionMiddleware implements MiddlewareInterface
     private $logger;
 
     /**
+     * @var EnvironmentInterface
+     */
+    private $environment;
+
+    /**
      * @param ContainerInterface $container
      */
     public function __construct(ContainerInterface $container)
@@ -35,6 +41,10 @@ class ExceptionMiddleware implements MiddlewareInterface
 
         if ($container->has(LoggerInterface::class)){
             $this->logger = $container->get(LoggerInterface::class);
+        }
+
+        if ($container->has(EnvironmentInterface::class)){
+            $this->environment = $container->get(EnvironmentInterface::class);
         }
     }
 
@@ -68,7 +78,13 @@ class ExceptionMiddleware implements MiddlewareInterface
                 $this->logger->critical($exception);
             }
 
-            $response = $this->writeException(500, 'Internal Server Error');
+            if ($this->environment && $this->environment->isDevelopment()){
+                $message = (string) $exception;
+            } else {
+                $message = 'Internal Server Error';
+            }
+
+            $response = $this->writeException(500, $message);
         }
 
         return $response;

@@ -2,6 +2,7 @@
 namespace ImmediateSolutions\Infrastructure\Doctrine;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use ImmediateSolutions\Infrastructure\ConfigInterface;
 use ImmediateSolutions\Support\Framework\ContainerInterface;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\Configuration;
@@ -31,8 +32,8 @@ class EntityManagerFactory
      */
     public function __invoke(ContainerInterface $container)
     {
-        $config = $container->get('config')->get('doctrine');
-        $packages = $container->get('config')->get('packages');
+        $config = $container->get(ConfigInterface::class)->get('doctrine');
+        $packages = $container->get(ConfigInterface::class)->get('packages');
 
         $em = EntityManager::create(
             $config['connections'][$config['db']],
@@ -42,7 +43,7 @@ class EntityManagerFactory
         $this->registerTypes(
             $em->getConnection(),
             $packages,
-            $container->get('config')->get('doctrine.types', [])
+            $container->get(ConfigInterface::class)->get('doctrine.types', [])
         );
 
         return $em;

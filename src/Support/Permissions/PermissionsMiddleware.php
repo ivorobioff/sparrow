@@ -76,7 +76,7 @@ class PermissionsMiddleware implements ActionMiddlewareInterface
      */
     private function getClass($controller)
     {
-        $parts = explode('\\', $controller);
+        $parts = explode('\\', get_class($controller));
         $name = array_pop($parts);
 
         return (implode('\\', $parts).'\Permissions\\'.cut_string_right($name, 'Controller').'Permissions');
