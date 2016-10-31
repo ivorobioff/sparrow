@@ -1,6 +1,5 @@
 <?php
-namespace ImmediateSolutions\Support\Rest;
-use ImmediateSolutions\Support\Core\Options\PropertiesToClearInterface;
+namespace ImmediateSolutions\Support\Core\Options;
 
 /**
  *

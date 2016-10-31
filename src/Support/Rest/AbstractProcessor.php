@@ -1,6 +1,7 @@
 <?php
 namespace ImmediateSolutions\Support\Rest;
 use ImmediateSolutions\Support\Core\Options\PropertiesToClearInterface;
+use ImmediateSolutions\Support\Core\Options\UpdateOptions;
 use ImmediateSolutions\Support\Framework\ContainerInterface;
 use ImmediateSolutions\Support\Rest\Validation\Rules\DocumentMixedIdentifier;
 use ImmediateSolutions\Support\Validation\Binder;

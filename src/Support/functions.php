@@ -365,6 +365,19 @@ function camel_keys(array $data)
     return $result;
 }
 
+/**
+ * @param $query
+ * @return array
+ */
+function parse_url_query($query)
+{
+    $data = [];
+
+    parse_str($query, $data);
+
+    return $data;
+}
+
 /*
 | -------------------------------------------------------------------
 | ALIASES OF METHODS IN THE "DEBUG" CLASS
