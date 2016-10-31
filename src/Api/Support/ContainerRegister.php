@@ -1,8 +1,6 @@
 <?php
 namespace ImmediateSolutions\Api\Support;
 use ImmediateSolutions\Infrastructure\AbstractContainerRegister;
-use ImmediateSolutions\Support\Api\DefaultMutatorProviderFactory;
-use ImmediateSolutions\Support\Api\MutatorProviderInterface;
 use ImmediateSolutions\Support\Framework\ActionMiddlewareRegisterInterface;
 use ImmediateSolutions\Support\Framework\ContainerPopulatorInterface;
 use ImmediateSolutions\Support\Framework\MiddlewareRegisterInterface;
@@ -28,7 +26,6 @@ class ContainerRegister extends AbstractContainerRegister
 
             ->initialize(AbstractProcessor::class, function(AbstractProcessor $processor){
                 $processor->validate();
-            })
-            ->service(MutatorProviderInterface::class, new DefaultMutatorProviderFactory());
+            });
     }
 }
