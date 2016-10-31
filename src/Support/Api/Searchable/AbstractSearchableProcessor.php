@@ -1,15 +1,17 @@
 <?php
-namespace ImmediateSolutions\Support\Rest\Searchable;
+namespace ImmediateSolutions\Support\Api\Searchable;
 
 use ImmediateSolutions\Support\Core\Criteria\Constraint;
 use ImmediateSolutions\Support\Core\Criteria\Criteria;
-use ImmediateSolutions\Support\Rest\Searchable\Resolvers\BoolResolver;
-use ImmediateSolutions\Support\Rest\Searchable\Resolvers\DateTimeResolver;
-use ImmediateSolutions\Support\Rest\Searchable\Resolvers\DayResolver;
-use ImmediateSolutions\Support\Rest\Searchable\Resolvers\EnumResolver;
-use ImmediateSolutions\Support\Rest\Searchable\Resolvers\IntResolver;
+use ImmediateSolutions\Support\Api\Searchable\Resolvers\BoolResolver;
+use ImmediateSolutions\Support\Api\Searchable\Resolvers\DateTimeResolver;
+use ImmediateSolutions\Support\Api\Searchable\Resolvers\DayResolver;
+use ImmediateSolutions\Support\Api\Searchable\Resolvers\EnumResolver;
+use ImmediateSolutions\Support\Api\Searchable\Resolvers\IntResolver;
+use ImmediateSolutions\Support\Framework\ContainerInterface;
 use Psr\Http\Message\RequestInterface;
 use RuntimeException;
+
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>
  */
@@ -28,7 +30,21 @@ abstract class AbstractSearchableProcessor
     /**
      * @var RequestInterface
      */
-    private $request;
+    protected $request;
+
+    /**
+     * @var ContainerInterface
+     */
+    protected $container;
+
+    /**
+     * @param ContainerInterface $container
+     */
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+        $this->request = $container->get(RequestInterface::class);
+    }
 
     /**
      * @return array
@@ -59,7 +75,6 @@ abstract class AbstractSearchableProcessor
 
         return $this->data;
     }
-
 
     /**
      * @return Criteria[]

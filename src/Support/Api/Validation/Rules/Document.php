@@ -1,5 +1,5 @@
 <?php
-namespace ImmediateSolutions\Support\Rest\Validation\Rules;
+namespace ImmediateSolutions\Support\Api\Validation\Rules;
 use ImmediateSolutions\Support\Validation\Error;
 use ImmediateSolutions\Support\Validation\Rules\AbstractRule;
 use Psr\Http\Message\UploadedFileInterface;

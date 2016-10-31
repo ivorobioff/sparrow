@@ -1,5 +1,5 @@
 <?php
-namespace ImmediateSolutions\Support\Rest\Searchable;
+namespace ImmediateSolutions\Support\Api\Searchable;
 
 use ImmediateSolutions\Support\Core\Criteria\Sorting\Direction;
 use ImmediateSolutions\Support\Core\Criteria\Sorting\Sortable;

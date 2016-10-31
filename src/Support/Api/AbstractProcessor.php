@@ -1,9 +1,9 @@
 <?php
-namespace ImmediateSolutions\Support\Rest;
+namespace ImmediateSolutions\Support\Api;
 use ImmediateSolutions\Support\Core\Options\PropertiesToClearInterface;
 use ImmediateSolutions\Support\Core\Options\UpdateOptions;
 use ImmediateSolutions\Support\Framework\ContainerInterface;
-use ImmediateSolutions\Support\Rest\Validation\Rules\DocumentMixedIdentifier;
+use ImmediateSolutions\Support\Api\Validation\Rules\DocumentMixedIdentifier;
 use ImmediateSolutions\Support\Validation\Binder;
 use ImmediateSolutions\Support\Validation\ErrorsThrowableCollection;
 use ImmediateSolutions\Support\Validation\Performer;

@@ -1,5 +1,5 @@
 <?php
-namespace ImmediateSolutions\Support\Rest\Searchable\Resolvers;
+namespace ImmediateSolutions\Support\Api\Searchable\Resolvers;
 
 /**
  * @author Igor Vorobiov <igor.vorobioff@gmail.com>

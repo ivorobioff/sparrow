@@ -3,7 +3,7 @@ namespace ImmediateSolutions\Api\Thing\Controllers;
 use ImmediateSolutions\Api\Thing\Processors\ThingsProcessor;
 use ImmediateSolutions\Api\Thing\Serializers\ThingSerializer;
 use ImmediateSolutions\Core\Thing\Services\ThingService;
-use ImmediateSolutions\Support\Rest\AbstractController;
+use ImmediateSolutions\Support\Api\AbstractController;
 use Psr\Http\Message\ResponseInterface;
 
 /**

@@ -1,5 +1,5 @@
 <?php
-namespace ImmediateSolutions\Support\Rest;
+namespace ImmediateSolutions\Support\Api;
 use Psr\Http\Message\ResponseInterface;
 use Zend\Diactoros\Response;
 

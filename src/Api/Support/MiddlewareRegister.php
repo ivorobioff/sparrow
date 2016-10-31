@@ -2,7 +2,7 @@
 namespace ImmediateSolutions\Api\Support;
 use ImmediateSolutions\Support\Framework\MiddlewarePipeline;
 use ImmediateSolutions\Support\Framework\MiddlewareRegisterInterface;
-use ImmediateSolutions\Support\Rest\ExceptionMiddleware;
+use ImmediateSolutions\Support\Api\ExceptionMiddleware;
 
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>

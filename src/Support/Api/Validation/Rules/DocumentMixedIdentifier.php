@@ -1,5 +1,5 @@
 <?php
-namespace ImmediateSolutions\Support\Rest\Validation\Rules;
+namespace ImmediateSolutions\Support\Api\Validation\Rules;
 
 use ImmediateSolutions\Support\Validation\Rules\Combine;
 use ImmediateSolutions\Support\Validation\Rules\IntegerCast;

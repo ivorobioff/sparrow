@@ -1,5 +1,5 @@
 <?php
-namespace ImmediateSolutions\Support\Rest\Searchable\Resolvers;
+namespace ImmediateSolutions\Support\Api\Searchable\Resolvers;
 use ImmediateSolutions\Support\Enum\Enum;
 
 

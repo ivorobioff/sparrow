@@ -1,5 +1,5 @@
 <?php
-namespace ImmediateSolutions\Support\Rest;
+namespace ImmediateSolutions\Support\Api;
 
 use ImmediateSolutions\Support\Framework\ContainerInterface;
 use ImmediateSolutions\Support\Framework\Exceptions\AbstractHttpException;

@@ -1,7 +1,7 @@
 <?php
 namespace ImmediateSolutions\Api\Thing\Processors;
 use ImmediateSolutions\Core\Thing\Payloads\ThingPayload;
-use ImmediateSolutions\Support\Rest\AbstractProcessor;
+use ImmediateSolutions\Support\Api\AbstractProcessor;
 
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>

@@ -378,6 +378,36 @@ function parse_url_query($query)
     return $data;
 }
 
+/**
+ * Return the first element in an array passing a given truth test.
+ *
+ * @param  array  $array
+ * @param  callable|null  $callback
+ * @param  mixed  $default
+ * @return mixed
+ */
+function array_first(array $array, callable $callback = null, $default = null)
+{
+    if (is_null($callback)) {
+
+        if (!$array) {
+            return $default;
+        }
+
+        foreach ($array as $item) {
+            return $item;
+        }
+    }
+
+    foreach ($array as $key => $value) {
+        if (call_user_func($callback, $value, $key)) {
+            return $value;
+        }
+    }
+    return $default;
+}
+
+
 /*
 | -------------------------------------------------------------------
 | ALIASES OF METHODS IN THE "DEBUG" CLASS
