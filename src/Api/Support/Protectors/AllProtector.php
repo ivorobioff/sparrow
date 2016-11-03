@@ -1,5 +1,6 @@
 <?php
 namespace ImmediateSolutions\Api\Support\Protectors;
+use ImmediateSolutions\Support\Framework\Action;
 use ImmediateSolutions\Support\Permissions\ProtectorInterface;
 
 /**
@@ -8,9 +9,10 @@ use ImmediateSolutions\Support\Permissions\ProtectorInterface;
 class AllProtector implements ProtectorInterface
 {
     /**
+     * @param Action $action
      * @return bool
      */
-    public function grants()
+    public function grants(Action $action)
     {
         return true;
     }

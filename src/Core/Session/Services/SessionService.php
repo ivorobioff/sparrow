@@ -117,4 +117,13 @@ class SessionService extends Service
     {
         $this->entityManager->getRepository(Session::class)->delete(['id' => $id]);
     }
+
+    /**
+     * @param string $token
+     * @return Session
+     */
+    public function getByToken($token)
+    {
+        return $this->entityManager->getRepository(Session::class)->findOneBy(['token' => $token]);
+    }
 }

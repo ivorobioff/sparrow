@@ -46,7 +46,6 @@ return [
 
     'protectors' => [
         'all' => ImmediateSolutions\Api\Support\Protectors\AllProtector::class,
-        'auth' => ImmediateSolutions\Api\Support\Protectors\AuthProtector::class,
-        'owner' => ImmediateSolutions\Api\Support\Protectors\OwnerProtector::class
+        'auth' => ImmediateSolutions\Api\Support\Protectors\AuthProtector::class
     ]
 ];

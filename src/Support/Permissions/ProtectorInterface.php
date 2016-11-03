@@ -1,5 +1,6 @@
 <?php
 namespace ImmediateSolutions\Support\Permissions;
+use ImmediateSolutions\Support\Framework\Action;
 
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>
@@ -7,7 +8,8 @@ namespace ImmediateSolutions\Support\Permissions;
 interface ProtectorInterface
 {
     /**
+     * @param Action $action
      * @return bool
      */
-    public function grants();
+    public function grants(Action $action);
 }

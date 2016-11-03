@@ -69,7 +69,7 @@ class Action
      */
     public function getController()
     {
-        if (is_array($this->callback)){
+        if (!is_array($this->callback)){
             return null;
         }
 
@@ -81,7 +81,7 @@ class Action
      */
     public function getName()
     {
-        if (is_array($this->callback)){
+        if (!is_array($this->callback)){
             return null;
         }
 

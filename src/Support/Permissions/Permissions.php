@@ -1,6 +1,7 @@
 <?php
 namespace ImmediateSolutions\Support\Permissions;
 
+use ImmediateSolutions\Support\Framework\Action;
 use RuntimeException;
 use ImmediateSolutions\Support\Framework\ContainerInterface;
 
@@ -31,10 +32,11 @@ class Permissions implements PermissionsInterface
 
     /**
      * @param string|array $protectors
+     * @param Action $action
      * @return bool
      * @throws RuntimeException
      */
-    public function has($protectors)
+    public function has($protectors, Action $action)
     {
         if (!is_array($protectors)) {
             $protectors = [$protectors];
@@ -69,7 +71,7 @@ class Permissions implements PermissionsInterface
                 $instance->setOptions($options);
             }
 
-            if ($instance->grants()) {
+            if ($instance->grants($action)) {
                 return true;
             }
         }

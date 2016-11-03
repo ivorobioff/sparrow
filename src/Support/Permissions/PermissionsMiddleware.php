@@ -52,7 +52,7 @@ class PermissionsMiddleware implements ActionMiddlewareInterface
             throw new PermissionsException('The permissions class "' . $class . '" has not been found.');
         }
 
-        $definition = new $class();
+        $definition = $this->container->get($class);
 
         if (!$definition instanceof AbstractActionsPermissions) {
             throw new PermissionsException('The permissions class "' . $class . '" must be instance of AbstractPermissions.');
@@ -63,7 +63,7 @@ class PermissionsMiddleware implements ActionMiddlewareInterface
          */
         $permissions = $this->container->get(PermissionsInterface::class);
 
-        if (!$permissions->has($definition->getProtectors($method))) {
+        if (!$permissions->has($definition->getProtectors($method), $action)) {
             throw new ForbiddenHttpException();
         }
 

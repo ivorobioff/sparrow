@@ -1,5 +1,6 @@
 <?php
 namespace ImmediateSolutions\Api\Support;
+use ImmediateSolutions\Core\Session\Entities\Session;
 use ImmediateSolutions\Infrastructure\AbstractContainerRegister;
 use ImmediateSolutions\Infrastructure\ConfigInterface;
 use ImmediateSolutions\Support\Framework\ActionMiddlewareRegisterInterface;
@@ -43,6 +44,7 @@ class ContainerRegister extends AbstractContainerRegister
 
             ->initialize(AbstractProcessor::class, function(AbstractProcessor $processor){
                 $processor->validate();
-            });
+            })
+            ->service(Session::class, new SessionFactory());
     }
 }

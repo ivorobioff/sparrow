@@ -1,5 +1,6 @@
 <?php
 namespace ImmediateSolutions\Api\Session\Controllers\Permissions;
+use ImmediateSolutions\Api\Session\Protectors\OwnerProtector;
 use ImmediateSolutions\Support\Permissions\AbstractActionsPermissions;
 
 /**
@@ -14,9 +15,9 @@ class SessionsPermissions extends AbstractActionsPermissions
     {
         return [
             'store' => 'all',
-            'show' => 'owner',
-            'destroy' => 'owner',
-            'refresh' => 'owner'
+            'show' => OwnerProtector::class,
+            'destroy' => OwnerProtector::class,
+            'refresh' => OwnerProtector::class
         ];
     }
 }
