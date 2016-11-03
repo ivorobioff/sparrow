@@ -1,6 +1,6 @@
 <?php
 namespace ImmediateSolutions\Support\Core\Criteria;
-use ImmediateSolutions\Support\Enum\Enum;
+use ImmediateSolutions\Support\Other\Enum;
 
 /**
  * @author Igor Vorobiov <igor.vorobioff@gmail.com>

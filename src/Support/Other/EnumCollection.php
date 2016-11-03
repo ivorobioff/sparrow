@@ -1,5 +1,5 @@
 <?php
-namespace ImmediateSolutions\Support\Enum;
+namespace ImmediateSolutions\Support\Other;
 
 use ArrayAccess;
 use Countable;

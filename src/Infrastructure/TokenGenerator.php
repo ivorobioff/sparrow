@@ -1,6 +1,6 @@
 <?php
-namespace ImmediateSolutions\Infrastructure\Session;
-use ImmediateSolutions\Core\Session\Interfaces\TokenGeneratorInterface;
+namespace ImmediateSolutions\Infrastructure;
+use ImmediateSolutions\Support\Core\Interfaces\TokenGeneratorInterface;
 
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>

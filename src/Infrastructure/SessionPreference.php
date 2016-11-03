@@ -1,5 +1,5 @@
 <?php
-namespace ImmediateSolutions\Infrastructure\Session;
+namespace ImmediateSolutions\Infrastructure;
 use ImmediateSolutions\Core\Session\Interfaces\SessionPreferenceInterface;
 
 /**

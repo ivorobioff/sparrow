@@ -2,13 +2,12 @@
 namespace ImmediateSolutions\Core\Session\Services;
 use ImmediateSolutions\Core\Session\Entities\Session;
 use ImmediateSolutions\Core\Session\Interfaces\SessionPreferenceInterface;
-use ImmediateSolutions\Core\Session\Interfaces\TokenGeneratorInterface;
+use ImmediateSolutions\Support\Core\Interfaces\TokenGeneratorInterface;
 use ImmediateSolutions\Core\User\Payloads\CredentialsPayload;
 use ImmediateSolutions\Core\User\Validation\CredentialsValidator;
 use ImmediateSolutions\Core\Support\Service;
 use ImmediateSolutions\Core\User\Services\UserService;
 use ImmediateSolutions\Support\Validation\PresentableException;
-use DateTime;
 
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>

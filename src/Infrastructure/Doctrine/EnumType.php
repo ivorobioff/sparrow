@@ -1,7 +1,7 @@
 <?php
 namespace ImmediateSolutions\Infrastructure\Doctrine;
 
-use ImmediateSolutions\Support\Enum\Enum;
+use ImmediateSolutions\Support\Other\Enum;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 
 /**

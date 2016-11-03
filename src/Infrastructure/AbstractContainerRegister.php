@@ -2,11 +2,9 @@
 namespace ImmediateSolutions\Infrastructure;
 use Doctrine\ORM\EntityManagerInterface;
 use ImmediateSolutions\Core\Session\Interfaces\SessionPreferenceInterface;
-use ImmediateSolutions\Core\Session\Interfaces\TokenGeneratorInterface;
+use ImmediateSolutions\Support\Core\Interfaces\TokenGeneratorInterface;
 use ImmediateSolutions\Core\User\Interfaces\PasswordEncryptorInterface;
 use ImmediateSolutions\Infrastructure\Doctrine\EntityManagerFactory;
-use ImmediateSolutions\Infrastructure\Session\SessionPreference;
-use ImmediateSolutions\Infrastructure\Session\TokenGenerator;
 use ImmediateSolutions\Support\Framework\ContainerPopulatorInterface;
 use ImmediateSolutions\Support\Framework\ContainerRegisterInterface;
 use ImmediateSolutions\Support\Api\JsonResponseFactory;

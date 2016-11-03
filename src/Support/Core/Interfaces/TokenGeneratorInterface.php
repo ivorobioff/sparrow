@@ -1,5 +1,5 @@
 <?php
-namespace ImmediateSolutions\Core\Session\Interfaces;
+namespace ImmediateSolutions\Support\Core\Interfaces;
 
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>
