@@ -3,6 +3,7 @@ namespace ImmediateSolutions\Core\User\Services;
 use ImmediateSolutions\Core\Support\Service;
 use ImmediateSolutions\Core\User\Entities\User;
 use ImmediateSolutions\Core\User\Interfaces\PasswordEncryptorInterface;
+use ImmediateSolutions\Core\User\Payloads\CredentialsPayload;
 use ImmediateSolutions\Core\User\Payloads\UserPayload;
 use ImmediateSolutions\Core\User\Validation\UserValidator;
 
@@ -106,4 +107,43 @@ class UserService extends Service
             ->getRepository(User::class)
             ->exists(['email' => trim($email)]);
     }
+
+    /**
+     * @param CredentialsPayload $payload
+     * @return bool
+     */
+    public function canAuthorize(CredentialsPayload $payload)
+    {
+        return (bool) $this->getAuthorized($payload);
+    }
+
+    /**
+     * @param CredentialsPayload $payload
+     * @return User
+     */
+    public function getAuthorized(CredentialsPayload $payload)
+    {
+        /**
+         * @var User $user
+         */
+        $user = $this->entityManager->getRepository(User::class)
+            ->findBy(['email' => $payload]);
+
+        if (!$user){
+            return null;
+        }
+
+        /**
+         * @var PasswordEncryptorInterface $encryptor
+         */
+        $encryptor = $this->container->get(PasswordEncryptorInterface::class);
+
+        if (!$encryptor->verify($payload->getPassword(), $user->getPassword())){
+            return null;
+        }
+
+        return $user;
+    }
+
+
 }

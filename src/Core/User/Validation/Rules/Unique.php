@@ -9,7 +9,7 @@ use ImmediateSolutions\Support\Validation\Value;
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>
  */
-class UserUnique extends AbstractRule
+class Unique extends AbstractRule
 {
     /**
      * @var UserService

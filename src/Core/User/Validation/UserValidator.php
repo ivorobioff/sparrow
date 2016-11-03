@@ -2,7 +2,7 @@
 namespace ImmediateSolutions\Core\User\Validation;
 use ImmediateSolutions\Core\User\Entities\User;
 use ImmediateSolutions\Core\User\Services\UserService;
-use ImmediateSolutions\Core\User\Validation\Rules\UserUnique;
+use ImmediateSolutions\Core\User\Validation\Rules\Unique;
 use ImmediateSolutions\Support\Validation\AbstractThrowableValidator;
 use ImmediateSolutions\Support\Validation\Binder;
 use ImmediateSolutions\Support\Validation\Property;
@@ -48,7 +48,7 @@ class UserValidator extends AbstractThrowableValidator
                 ->addRule(new Blank())
                 ->addRule(new Length(1, 255))
                 ->addRule(new Email())
-                ->addRule(new UserUnique($this->userService, $this->currentUser));
+                ->addRule(new Unique($this->userService, $this->currentUser));
         });
 
         $binder->bind('password', function(Property $property){
