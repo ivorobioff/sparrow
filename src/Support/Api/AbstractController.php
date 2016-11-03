@@ -1,6 +1,7 @@
 <?php
 namespace ImmediateSolutions\Support\Api;
 use ImmediateSolutions\Support\Framework\ContainerInterface;
+use ImmediateSolutions\Support\Framework\Exceptions\NotFoundHttpException;
 use ImmediateSolutions\Support\Pagination\AdapterInterface;
 use ImmediateSolutions\Support\Pagination\Describer;
 use ImmediateSolutions\Support\Pagination\PaginationProviderInterface;
@@ -58,5 +59,13 @@ abstract class AbstractController implements ProtectableInterface
     public function serializer($class)
     {
         return $this->container->get($class);
+    }
+
+    /**
+     * @throws NotFoundHttpException
+     */
+    public function show404()
+    {
+        throw new NotFoundHttpException();
     }
 }

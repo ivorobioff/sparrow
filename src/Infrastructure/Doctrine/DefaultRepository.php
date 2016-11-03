@@ -102,7 +102,7 @@ class DefaultRepository extends EntityRepository implements RepositoryInterface
             $parts = explode(':', $column);
 
             $column = $parts[0];
-            $placeholder = array_take($parts, 1, $column);
+            $placeholder = array_get($parts, 1, $column);
 
             $operation = $value[0];
             $value = $value[1];

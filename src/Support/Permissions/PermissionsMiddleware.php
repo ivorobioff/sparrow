@@ -34,13 +34,13 @@ class PermissionsMiddleware implements ActionMiddlewareInterface
      */
     public function handle(Action $action, callable $next)
     {
-        $callback = $action->getCallback();
+        $controller = $action->getController();
+        $method = $action->getName();
 
-        if (!is_array($callback)){
+        if (!$controller){
             return $next($action);
         }
 
-        list($controller, $method) = $callback;
 
         if (!$controller instanceof ProtectableInterface){
             return $next($action);

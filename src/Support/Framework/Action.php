@@ -63,4 +63,41 @@ class Action
     {
         return $this->request;
     }
+
+    /**
+     * @return object
+     */
+    public function getController()
+    {
+        if (is_array($this->callback)){
+            return null;
+        }
+
+        return $this->callback[0];
+    }
+
+    /**
+     * @return null
+     */
+    public function getName()
+    {
+        if (is_array($this->callback)){
+            return null;
+        }
+
+        return $this->callback[1];
+    }
+
+    /**
+     * @param string|string[] $names
+     * @return bool
+     */
+    public function is($names)
+    {
+        if (!is_array($names)){
+            $names = [$names];
+        }
+
+        return in_array($this->getName(), $names);
+    }
 }

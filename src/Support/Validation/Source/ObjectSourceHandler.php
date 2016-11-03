@@ -14,19 +14,13 @@ class ObjectSourceHandler implements SourceHandlerInterface
 	 */
 	private $object;
 
-	/**
-	 * @var array
-	 */
-	private $forcedProperties;
 
 	/**
 	 * @param object $object
-	 * @param array $forcedProperties
 	 */
-	public function __construct($object, array $forcedProperties = [])
+	public function __construct($object)
 	{
 		$this->object = $object;
-		$this->forcedProperties = $forcedProperties;
 	}
 
 	/**
@@ -53,22 +47,34 @@ class ObjectSourceHandler implements SourceHandlerInterface
 	 */
 	public function hasProperty($property)
 	{
-		return $this->getValue($property) !== null || in_array($property, $this->forcedProperties);
-	}
+        if ($this->getValue($property) !== null){
+            return true;
+        }
 
-	/**
-	 * @param string $property
-	 */
-	public function addForcedProperty($property)
-	{
-		$this->forcedProperties[] = $property;
-	}
+        if ($this->object === null){
+            return false;
+        }
 
-	/**
-	 * @return array
-	 */
-	public function getForcedProperties()
-	{
-		return $this->forcedProperties;
+        $path = explode('.', $property);
+
+        $property = array_pop($path);
+
+        $accessor = PropertyAccess::createPropertyAccessor();
+
+        $object = $this->object;
+
+        foreach ($path as $segment){
+            $object = $accessor->getValue($object, $segment);
+
+            if (!is_object($object)){
+                return false;
+            }
+        }
+
+        if ($object instanceof ClearableAwareInterface){
+            return $object->isClearable($property);
+        }
+
+        return false;
 	}
 }

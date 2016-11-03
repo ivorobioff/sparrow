@@ -1,6 +1,6 @@
 <?php
 namespace ImmediateSolutions\Api\Support;
-use ImmediateSolutions\Api\Thing\Controllers\ThingsController;
+use ImmediateSolutions\Api\User\Routes\UserRoutes;
 use ImmediateSolutions\Support\Framework\RouteRegisterInterface;
 use ImmediateSolutions\Support\Framework\RouterInterface;
 
@@ -14,8 +14,6 @@ class RouteRegister implements RouteRegisterInterface
      */
     public function register(RouterInterface $router)
     {
-        $router
-            ->get('/things', ThingsController::class.'@index')
-            ->post('/things', ThingsController::class.'@store');
+        call_user_func(new UserRoutes(), $router);
     }
 }

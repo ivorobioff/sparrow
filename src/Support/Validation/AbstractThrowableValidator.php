@@ -9,8 +9,6 @@ use ImmediateSolutions\Support\Validation\Source\ObjectSourceHandler;
  */
 abstract class AbstractThrowableValidator
 {
-    private $forcedProperties = [];
-
     /**
      * @param Binder $binder
      * @return void
@@ -51,24 +49,6 @@ abstract class AbstractThrowableValidator
             return new ArraySourceHandler($source);
         }
 
-        return new ObjectSourceHandler($source, $this->forcedProperties);
+        return new ObjectSourceHandler($source);
     }
-
-    /**
-     * @param array $forcedProperties
-     * @return $this
-     */
-    public function setForcedProperties(array $forcedProperties)
-    {
-        $this->forcedProperties = $forcedProperties;
-        return $this;
-    }
-
-	/**
-	 * @return array
-	 */
-	public function getForcedProperties()
-	{
-		return $this->forcedProperties;
-	}
 }

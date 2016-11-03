@@ -5,7 +5,9 @@
 
 return [
     'packages' => [
-        'Thing'
+        'Thing',
+        'User',
+        'Session'
     ],
 
     'doctrine' => [
@@ -43,6 +45,8 @@ return [
     ],
 
     'protectors' => [
-        'all' => ImmediateSolutions\Api\Support\Protectors\AllProtector::class
+        'all' => ImmediateSolutions\Api\Support\Protectors\AllProtector::class,
+        'auth' => ImmediateSolutions\Api\Support\Protectors\AuthProtector::class,
+        'owner' => ImmediateSolutions\Api\Support\Protectors\OwnerProtector::class
     ]
 ];

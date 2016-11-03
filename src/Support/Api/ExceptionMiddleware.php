@@ -70,7 +70,7 @@ class ExceptionMiddleware implements MiddlewareInterface
                 $data[$property] = $this->prepareError($error);
             }
 
-            $response = $this->responseFactory->create($data, 422);
+            $response = $this->responseFactory->create(['errors' => $data], 422);
 
         } catch(Exception $exception) {
 

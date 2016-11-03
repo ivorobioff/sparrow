@@ -1,6 +1,7 @@
 <?php
 namespace ImmediateSolutions\Infrastructure;
 use Doctrine\ORM\EntityManagerInterface;
+use ImmediateSolutions\Core\User\Interfaces\PasswordEncryptorInterface;
 use ImmediateSolutions\Infrastructure\Doctrine\EntityManagerFactory;
 use ImmediateSolutions\Support\Framework\ContainerPopulatorInterface;
 use ImmediateSolutions\Support\Framework\ContainerRegisterInterface;
@@ -26,6 +27,7 @@ abstract class AbstractContainerRegister implements ContainerRegisterInterface
             ->instance(ResponseFactoryInterface::class, JsonResponseFactory::class)
             ->service(EntityManagerInterface::class, new EntityManagerFactory())
             ->service(EnvironmentInterface::class, Environment::class)
+            ->service(PasswordEncryptorInterface::class, PasswordEncryptor::class)
             ->service(LoggerInterface::class, new MonologLoggerFactory());
     }
 }

@@ -1,7 +1,5 @@
 <?php
 namespace ImmediateSolutions\Support\Api;
-use ImmediateSolutions\Support\Core\Options\PropertiesToClearInterface;
-use ImmediateSolutions\Support\Core\Options\UpdateOptions;
 use ImmediateSolutions\Support\Framework\ContainerInterface;
 use ImmediateSolutions\Support\Api\Validation\Rules\DocumentMixedIdentifier;
 use ImmediateSolutions\Support\Validation\Binder;
@@ -63,6 +61,15 @@ abstract class AbstractProcessor
     protected function get($path, $default = null)
     {
         return array_get($this->getData(), $path, $default);
+    }
+
+    /**
+     * @param string $path
+     * @return bool
+     */
+    protected function has($path)
+    {
+        return array_has($this->getData(), $path);
     }
 
     /**
@@ -204,26 +211,5 @@ abstract class AbstractProcessor
                 ->setIdentifier('cast')
                 ->setMessage('The field should be an array.')
         ];
-    }
-
-    /**
-     *
-     * @param PropertiesToClearInterface $options
-     * @return PropertiesToClearInterface
-     */
-    public function getPropertiesToClear(PropertiesToClearInterface $options = null)
-    {
-        if ($options === null) {
-            $options = new UpdateOptions();
-        }
-
-        $data = array_keys(array_filter(
-            array_dot($this->getData()),
-            function($value){ return $value === null;}
-        ));
-
-        $options->setPropertiesToClear($data);
-
-        return $options;
     }
 }

@@ -39,7 +39,7 @@ class PackageDriver implements MappingDriver, MetadataClassesProvidableInterface
      */
     public function loadMetadataForClass($className, ClassMetadataInterface $metadata)
     {
-        $provider = array_take($this->getMetadataClasses(), $className);
+        $provider = array_get($this->getMetadataClasses(), $className);
 
         if (! $provider) {
             return;
