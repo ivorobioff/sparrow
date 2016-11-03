@@ -1,5 +1,5 @@
 <?php
-namespace ImmediateSolutions\Core\Session\Validation;
+namespace ImmediateSolutions\Core\User\Validation;
 use ImmediateSolutions\Core\User\Services\UserService;
 use ImmediateSolutions\Core\User\Validation\Rules\Access;
 use ImmediateSolutions\Support\Validation\AbstractThrowableValidator;
@@ -10,7 +10,7 @@ use ImmediateSolutions\Support\Validation\Rules\Obligate;
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>
  */
-class SessionValidator extends AbstractThrowableValidator
+class CredentialsValidator extends AbstractThrowableValidator
 {
     /**
      * @var UserService

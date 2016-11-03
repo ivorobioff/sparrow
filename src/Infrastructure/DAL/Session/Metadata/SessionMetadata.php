@@ -1,13 +1,13 @@
 <?php
-namespace ImmediateSolutions\Infrastructure\DAL\User\Metadata;
-
+namespace ImmediateSolutions\Infrastructure\DAL\Session\Metadata;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use ImmediateSolutions\Core\User\Entities\User;
 use ImmediateSolutions\Infrastructure\Doctrine\Metadata\AbstractMetadataProvider;
 
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>
  */
-class UserMetadata extends AbstractMetadataProvider
+class SessionMetadata extends AbstractMetadataProvider
 {
     /**
      * @param ClassMetadataBuilder $builder
@@ -15,7 +15,7 @@ class UserMetadata extends AbstractMetadataProvider
      */
     public function define(ClassMetadataBuilder $builder)
     {
-        $builder->setTable('users');
+        $builder->setTable('sessions');
 
         $builder
             ->createField('id', 'integer')
@@ -24,24 +24,15 @@ class UserMetadata extends AbstractMetadataProvider
             ->build();
 
         $builder
-            ->createField('email', 'string')
+            ->createField('token', 'string')
             ->unique()
             ->build();
 
-        $builder
-            ->createField('password', 'string')
-            ->build();
+        $builder->createManyToOne('user', User::class)->build();
 
-        $builder
-            ->createField('firstName', 'string')
-            ->build();
+        $builder->createField('createdAt', 'datetime')->build();
 
-        $builder
-            ->createField('lastName', 'string')
-            ->build();
+        $builder->createField('expiresAt', 'datetime')->build();
 
-        $builder
-            ->createField('createdAt', 'datetime')
-            ->build();
     }
 }

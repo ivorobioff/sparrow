@@ -127,7 +127,7 @@ class UserService extends Service
          * @var User $user
          */
         $user = $this->entityManager->getRepository(User::class)
-            ->findBy(['email' => $payload]);
+            ->findOneBy(['email' => $payload->getEmail()]);
 
         if (!$user){
             return null;

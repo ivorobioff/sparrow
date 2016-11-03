@@ -32,7 +32,7 @@ class Unique extends AbstractRule
 
         $this
             ->setIdentifier('unique')
-            ->setMessage('The user with the provided username already exists');
+            ->setMessage('The user with the provided email already exists');
     }
 
     /**

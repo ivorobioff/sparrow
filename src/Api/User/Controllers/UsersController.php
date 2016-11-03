@@ -1,16 +1,16 @@
 <?php
 namespace ImmediateSolutions\Api\User\Controllers;
 
+use ImmediateSolutions\Api\Support\Controller;
 use ImmediateSolutions\Api\User\Processors\UsersProcessor;
 use ImmediateSolutions\Api\User\Serializers\UserSerializer;
 use ImmediateSolutions\Core\User\Services\UserService;
-use ImmediateSolutions\Support\Api\AbstractController;
 use Psr\Http\Message\ResponseInterface;
 
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>
  */
-class UsersController extends AbstractController
+class UsersController extends Controller
 {
     /**
      * @var UserService
