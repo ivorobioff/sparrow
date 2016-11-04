@@ -1,5 +1,5 @@
 <?php
-namespace ImmediateSolutions\Core\Document\Validation;
+namespace ImmediateSolutions\Core\Document\Validation\Inflators;
 
 use ImmediateSolutions\Core\Document\Entities\Document;
 use ImmediateSolutions\Core\Document\Services\DocumentService;
