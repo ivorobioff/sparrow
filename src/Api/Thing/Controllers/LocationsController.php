@@ -4,6 +4,7 @@ use ImmediateSolutions\Api\Support\Controller;
 use ImmediateSolutions\Api\Thing\Processors\LocationsProcessor;
 use ImmediateSolutions\Api\Thing\Processors\LocationsSearchableProcessor;
 use ImmediateSolutions\Api\Thing\Serializers\LocationSerializer;
+use ImmediateSolutions\Core\Thing\Options\FetchLocationsOptions;
 use ImmediateSolutions\Core\Thing\Services\LocationService;
 use ImmediateSolutions\Core\User\Services\UserService;
 use Psr\Http\Message\ResponseInterface;
@@ -39,7 +40,11 @@ class LocationsController extends Controller
      */
     public function index(LocationsSearchableProcessor $processor)
     {
-        $locations = $this->locationService->getAll($this->session->getUser()->getId());
+        $options = new FetchLocationsOptions();
+        $options->setCriteria($processor->getCriteria());
+
+        $locations = $this->locationService
+            ->getAll($this->session->getUser()->getId(), $options);
 
         return $this->reply->collection($locations, $this->serializer(LocationSerializer::class));
     }

@@ -2,6 +2,7 @@
 namespace ImmediateSolutions\Api\Support;
 use ImmediateSolutions\Api\Document\Routes\DocumentRoutes;
 use ImmediateSolutions\Api\Session\Routes\SessionRoutes;
+use ImmediateSolutions\Api\Thing\Routes\CategoryRoutes;
 use ImmediateSolutions\Api\Thing\Routes\LocationRoutes;
 use ImmediateSolutions\Api\User\Routes\UserRoutes;
 use ImmediateSolutions\Support\Framework\RouteRegisterInterface;
@@ -21,5 +22,6 @@ class RouteRegister implements RouteRegisterInterface
         call_user_func(new SessionRoutes(), $router);
         call_user_func(new DocumentRoutes(), $router);
         call_user_func(new LocationRoutes(), $router);
+        call_user_func(new CategoryRoutes(), $router);
     }
 }

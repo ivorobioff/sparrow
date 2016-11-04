@@ -1,10 +1,13 @@
 <?php
 namespace ImmediateSolutions\Core\Thing\Services;
 use ImmediateSolutions\Core\Support\Service;
+use ImmediateSolutions\Core\Thing\Criteria\LocationFilterResolver;
 use ImmediateSolutions\Core\Thing\Entities\Location;
+use ImmediateSolutions\Core\Thing\Options\FetchLocationsOptions;
 use ImmediateSolutions\Core\Thing\Payloads\LocationPayload;
 use ImmediateSolutions\Core\Thing\Validation\LocationValidator;
 use ImmediateSolutions\Core\User\Entities\User;
+use ImmediateSolutions\Support\Core\Criteria\Filter;
 
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>
@@ -84,10 +87,25 @@ class LocationService extends Service
 
     /**
      * @param int $userId
+     * @param FetchLocationsOptions $options
      * @return Location[]
      */
-    public function getAll($userId)
+    public function getAll($userId, FetchLocationsOptions $options = null)
     {
-        return $this->entityManager->getRepository(Location::class)->findBy(['user' => $userId]);
+        if ($options === null){
+            $options = new FetchLocationsOptions();
+        }
+
+        $builder = $this->entityManager->createQueryBuilder();
+
+        $builder
+            ->from(Location::class, 'l')
+            ->select('l')
+            ->andWhere($builder->expr()->eq('l.user', ':user'))
+            ->setParameter('user', $userId);
+
+        (new Filter())->apply($builder, $options->getCriteria(), new LocationFilterResolver());
+
+        return $builder->getQuery()->getResult();
     }
 }

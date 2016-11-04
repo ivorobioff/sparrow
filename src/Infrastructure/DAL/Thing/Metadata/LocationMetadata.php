@@ -35,6 +35,7 @@ class LocationMetadata extends AbstractMetadataProvider
 
         $builder
             ->createManyToOne('user', User::class)
+            ->addJoinColumn('user_id', 'id', true, false, 'CASCADE')
             ->build();
     }
 }

@@ -5,6 +5,7 @@ use ImmediateSolutions\Core\Thing\Entities\Category;
 use ImmediateSolutions\Core\Thing\Payloads\CategoryPayload;
 use ImmediateSolutions\Core\Thing\Validation\CategoryValidator;
 use ImmediateSolutions\Core\User\Entities\User;
+use ImmediateSolutions\Core\User\Services\UserService;
 
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>
@@ -18,16 +19,21 @@ class CategoryService extends Service
      */
     public function create($userId, CategoryPayload $payload)
     {
-        (new CategoryValidator($this))->validate($payload);
+        /**
+         * @var User $user
+         */
+        $user = $this->entityManager->find(User::class, $userId);
+
+        /**
+         * @var UserService $userService
+         */
+        $userService = $this->container->get(UserService::class);
+
+        (new CategoryValidator($userService, $user))->validate($payload);
 
         $category = new Category();
 
         $this->exchange($payload, $category);
-
-        /**
-         * @var User $user
-         */
-        $user = $this->entityManager->getReference(User::class, $userId);
 
         $category->setUser($user);
 
@@ -43,12 +49,17 @@ class CategoryService extends Service
      */
     public function update($id, CategoryPayload $payload)
     {
-        (new CategoryValidator($this))->validate($payload);
-
         /**
          * @var Category $category
          */
         $category = $this->entityManager->find(Category::class, $id);
+
+        /**
+         * @var UserService $userService
+         */
+        $userService = $this->container->get(UserService::class);
+
+        (new CategoryValidator($userService, $category))->validate($payload, true);
 
         $this->exchange($payload, $category);
 
@@ -91,9 +102,11 @@ class CategoryService extends Service
 
     /**
      * @param int $userId
+     * @return Category[]
      */
     public function getAllRoots($userId)
     {
-
+        return $this->entityManager->getRepository(Category::class)
+            ->findBy(['parent' => null, 'user' => $userId]);
     }
 }

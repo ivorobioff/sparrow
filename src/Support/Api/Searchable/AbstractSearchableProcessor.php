@@ -61,7 +61,7 @@ abstract class AbstractSearchableProcessor
      */
     public function get($path, $default = null)
     {
-        return array_get($this->data, $path, $default);
+        return array_get($this->getData(), $path, $default);
     }
 
     /**

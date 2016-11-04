@@ -1,13 +1,14 @@
 <?php
-namespace ImmediateSolutions\Infrastructure\DAL\Session\Metadata;
+namespace ImmediateSolutions\Infrastructure\DAL\Thing\Metadata;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
+use ImmediateSolutions\Core\Thing\Entities\Category;
 use ImmediateSolutions\Core\User\Entities\User;
 use ImmediateSolutions\Infrastructure\Doctrine\Metadata\AbstractMetadataProvider;
 
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>
  */
-class SessionMetadata extends AbstractMetadataProvider
+class CategoryMetadata extends AbstractMetadataProvider
 {
     /**
      * @param ClassMetadataBuilder $builder
@@ -15,7 +16,7 @@ class SessionMetadata extends AbstractMetadataProvider
      */
     public function define(ClassMetadataBuilder $builder)
     {
-        $builder->setTable('sessions');
+        $builder->setTable('categories');
 
         $builder
             ->createField('id', 'integer')
@@ -24,8 +25,7 @@ class SessionMetadata extends AbstractMetadataProvider
             ->build();
 
         $builder
-            ->createField('token', 'string')
-            ->unique()
+            ->createField('title', 'string')
             ->build();
 
         $builder
@@ -33,9 +33,15 @@ class SessionMetadata extends AbstractMetadataProvider
             ->addJoinColumn('user_id', 'id', true, false, 'CASCADE')
             ->build();
 
-        $builder->createField('createdAt', 'datetime')->build();
+        $builder
+            ->createManyToOne('parent', Category::class)
+            ->addJoinColumn('parent_id', 'id', true, false, 'CASCADE')
+            ->inversedBy('children')
+            ->build();
 
-        $builder->createField('expiresAt', 'datetime')->build();
-
+        $builder
+            ->createOneToMany('children', Category::class)
+            ->mappedBy('parent')
+            ->build();
     }
 }
