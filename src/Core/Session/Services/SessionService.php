@@ -94,15 +94,6 @@ class SessionService extends Service
 
     /**
      * @param int $id
-     * @return bool
-     */
-    public function exists($id)
-    {
-        return $this->entityManager->getRepository(Session::class)->exists(['id' => $id]);
-    }
-
-    /**
-     * @param int $id
      * @return Session
      */
     public function get($id)
@@ -122,15 +113,17 @@ class SessionService extends Service
      * @param string $token
      * @return Session
      */
-    public function getByToken($token)
+    public function getNotExpiredByToken($token)
     {
-        return $this->entityManager->getRepository(Session::class)->findOneBy(['token' => $token]);
+        return $this->entityManager
+            ->getRepository(Session::class)
+            ->retrieve(['token' => $token, 'expiresAt' => ['>=', new DateTime()]]);
     }
 
     public function deleteAllExpired()
     {
         $this->entityManager->getRepository(Session::class)->delete([
-            'expireAt' => ['<', new DateTime()]
+            'expiresAt' => ['<', new DateTime()]
         ]);
     }
 }

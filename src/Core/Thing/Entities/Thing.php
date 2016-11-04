@@ -2,7 +2,7 @@
 namespace ImmediateSolutions\Core\Thing\Entities;
 use Doctrine\Common\Collections\ArrayCollection;
 use ImmediateSolutions\Core\Document\Entities\Document;
-use ImmediateSolutions\Core\Document\Entities\Support\DocumentUsageManagementTrait;
+use ImmediateSolutions\Core\Document\Support\DocumentUsageManagementTrait;
 use ImmediateSolutions\Core\Thing\Enums\Attitude;
 use DateTime;
 

@@ -4,6 +4,7 @@ use ImmediateSolutions\Api\Session\Processors\CredentialsProcessor;
 use ImmediateSolutions\Api\Session\Serializers\SessionSerializer;
 use ImmediateSolutions\Api\Support\Controller;
 use ImmediateSolutions\Core\Session\Services\SessionService;
+use ImmediateSolutions\Core\User\Services\UserService;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -17,11 +18,17 @@ class SessionsController extends Controller
     private $sessionService;
 
     /**
+     * @var UserService
+     */
+    private $userService;
+
+    /**
      * @param SessionService $sessionService
      */
-    public function initialize(SessionService $sessionService)
+    public function initialize(SessionService $sessionService, UserService $userService)
     {
         $this->sessionService = $sessionService;
+        $this->userService = $userService;
     }
 
     /**
@@ -41,10 +48,6 @@ class SessionsController extends Controller
      */
     public function refresh($sessionId)
     {
-        if (!$this->sessionService->exists($sessionId)){
-            $this->show404();
-        }
-
         $session = $this->sessionService->refresh($sessionId);
 
         return $this->reply->single($session, $this->serializer(SessionSerializer::class));
@@ -58,10 +61,6 @@ class SessionsController extends Controller
     {
         $session = $this->sessionService->get($sessionId);
 
-        if (!$session){
-            $this->show404();
-        }
-
         return $this->reply->single($session, $this->serializer(SessionSerializer::class));
     }
 
@@ -71,10 +70,6 @@ class SessionsController extends Controller
      */
     public function destroy($sessionId)
     {
-        if (!$this->sessionService->exists($sessionId)){
-            $this->show404();
-        }
-
         $this->sessionService->delete($sessionId);
 
         return $this->reply->blank();

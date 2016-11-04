@@ -1,6 +1,9 @@
 <?php
 namespace ImmediateSolutions\Core\User\Services;
+use ImmediateSolutions\Core\Session\Entities\Session;
 use ImmediateSolutions\Core\Support\Service;
+use ImmediateSolutions\Core\Thing\Entities\Category;
+use ImmediateSolutions\Core\Thing\Entities\Location;
 use ImmediateSolutions\Core\User\Entities\User;
 use ImmediateSolutions\Core\User\Interfaces\PasswordEncryptorInterface;
 use ImmediateSolutions\Core\User\Payloads\CredentialsPayload;
@@ -145,5 +148,37 @@ class UserService extends Service
         return $user;
     }
 
+    /**
+     * @param int $userId
+     * @param int $sessionId
+     * @return bool
+     */
+    public function hasSession($userId, $sessionId)
+    {
+        return $this->entityManager->getRepository(Session::class)
+            ->exists(['user' => $userId, 'id' => $sessionId]);
+    }
 
+    /**
+     * @param int $userId
+     * @param int $locationId
+     * @return bool
+     */
+    public function hasLocation($userId, $locationId)
+    {
+        return $this->entityManager->getRepository(Location::class)
+            ->exists(['user' => $userId, 'id' => $locationId]);
+    }
+
+
+    /**
+     * @param int $userId
+     * @param int $categoryId
+     * @return bool
+     */
+    public function hasCategory($userId, $categoryId)
+    {
+        return $this->entityManager->getRepository(Category::class)
+            ->exists(['user' => $userId, 'id' => $categoryId]);
+    }
 }

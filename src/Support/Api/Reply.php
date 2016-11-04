@@ -2,6 +2,7 @@
 namespace ImmediateSolutions\Support\Api;
 use ImmediateSolutions\Support\Pagination\PaginationProviderInterface;
 use Psr\Http\Message\ResponseInterface;
+use Traversable;
 
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>
@@ -49,7 +50,7 @@ class Reply
     }
 
     /**
-     * @param object[] $items
+     * @param object[]|array|Traversable $items
      * @param callable $serializer
      * @return ResponseInterface
      */

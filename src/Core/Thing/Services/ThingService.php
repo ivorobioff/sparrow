@@ -10,6 +10,23 @@ use ImmediateSolutions\Core\Thing\Payloads\ThingPayload;
  */
 class ThingService extends AbstractService
 {
+    /**
+     * @param ThingPayload $payload
+     * @return Thing
+     */
+    public function create(ThingPayload $payload)
+    {
+        $thing = new Thing();
+
+
+
+        $this->entityManager->persist($thing);
+        $this->entityManager->flush();
+
+        return $thing;
+    }
+
+
 
     /**
      * @param int $id
@@ -27,20 +44,5 @@ class ThingService extends AbstractService
     public function getAll($userId)
     {
         return $this->entityManager->getRepository(Thing::class)->findAll();
-    }
-
-    /**
-     * @param ThingPayload $payload
-     * @return Thing
-     */
-    public function create(ThingPayload $payload)
-    {
-        $thing = new Thing();
-        $thing->setName($payload->getName());
-
-        $this->entityManager->persist($thing);
-        $this->entityManager->flush();
-
-        return $thing;
     }
 }

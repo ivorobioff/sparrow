@@ -32,6 +32,6 @@ class SessionFactory
          */
         $sessionService = $container->get(SessionService::class);
 
-        return ($sessionService->getByToken($token) ?? new Session());
+        return ($sessionService->getNotExpiredByToken($token) ?? new Session());
     }
 }
