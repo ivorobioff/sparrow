@@ -4,11 +4,10 @@ namespace ImmediateSolutions\Core\Document\Services;
 use ImmediateSolutions\Core\Document\Entities\Document;
 use ImmediateSolutions\Core\Document\Interfaces\DocumentPreferenceInterface;
 use ImmediateSolutions\Core\Document\Interfaces\StorageInterface;
-use ImmediateSolutions\Core\Document\Payloads\DocumentPayload;
-use ImmediateSolutions\Core\Document\Validation\DocumentValidator;
 use ImmediateSolutions\Core\Support\Service;
 use ImmediateSolutions\Support\Core\Interfaces\TokenGeneratorInterface;
 use ImmediateSolutions\Support\Other\Tracker;
+use Psr\Http\Message\UploadedFileInterface;
 use Traversable;
 use DateTime;
 
@@ -18,21 +17,19 @@ use DateTime;
 class DocumentService extends Service
 {
     /**
-     * @param DocumentPayload $payload
+     * @param UploadedFileInterface $file
      * @return Document
      */
-    public function create(DocumentPayload $payload)
+    public function create(UploadedFileInterface $file)
     {
 		/**
 		 * @var StorageInterface $storage
 		 */
 		$storage = $this->container->get(StorageInterface::class);
 
-        (new DocumentValidator($storage))->validate($payload);
+        if ($file->getError() !== UPLOAD_ERR_OK){
 
-        $location = $payload->getLocation();
-
-        $descriptor = $storage->getFileDescriptor($location);
+        }
 
         $document = new Document();
 
@@ -43,9 +40,10 @@ class DocumentService extends Service
 
         $document->setToken($tokenGenerator->generate());
 
-        $document->setSize($descriptor->getSize());
+        $document->setSize($file->getSize());
 
-        $document->setName($payload->getSuggestedName());
+        $document->setName($file->getClientFilename());
+        $document->setFormat($file->getClientMediaType());
 
         $document->setUri('');
         $document->setUploadedAt(new DateTime());
@@ -53,11 +51,11 @@ class DocumentService extends Service
         $this->entityManager->persist($document);
         $this->entityManager->flush();
 
-        $remoteUri = '/documents/' . $document->getId() . '/' . $document->getName();
+        $uri = '/documents/' . $document->getId() . '/' . $document->getName();
 
-        $storage->putFileIntoRemoteStorage($location, $remoteUri);
+        $storage->move($file, $uri);
 
-        $document->setUri($remoteUri);
+        $document->setUri($uri);
 
         $this->entityManager->persist($document);
         $this->entityManager->flush();
@@ -128,14 +126,14 @@ class DocumentService extends Service
 			$this->entityManager->remove($document);
 
 			if ($tracker->isTime()){
-				$storage->removeFilesFromRemoteStorage($uris);
+				$storage->delete($uris);
 				$this->entityManager->flush();
 				$this->entityManager->clear();
 				$uris = [];
 			}
 		}
 
-		$storage->removeFilesFromRemoteStorage($uris);
+		$storage->delete($uris);
 		$this->entityManager->flush();
 	}
 }

@@ -1,30 +1,28 @@
 <?php
 namespace ImmediateSolutions\Api\Document\Processors;
 use ImmediateSolutions\Api\Support\Processor;
-use ImmediateSolutions\Core\Document\Payloads\DocumentPayload;
-use ImmediateSolutions\Support\Validation\Binder;
-use ImmediateSolutions\Support\Validation\Property;
-use ImmediateSolutions\Support\Validation\Rules\Obligate;
+use ImmediateSolutions\Support\Validation\Error;
+use ImmediateSolutions\Support\Validation\ErrorsThrowableCollection;
+use Psr\Http\Message\UploadedFileInterface;
 
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>
  */
 class DocumentsProcessor extends Processor
 {
-    public function rules(Binder $binder)
+    public function validate()
     {
-        $binder->bind('document', function(Property $property){
-            $property->addRule(new Obligate());
-        });
+        if (count($this->request->getUploadedFiles()) === 0){
+            ErrorsThrowableCollection::throwError(
+                'document', new Error('exists', 'The file has not been uploaded'));
+        }
     }
 
     /**
-     * @return DocumentPayload
+     * @return UploadedFileInterface
      */
-    public function createPayload()
+    public function getUploadedFile()
     {
-        $payload = new DocumentPayload();
-
-        return $payload;
+       return array_first($this->request->getUploadedFiles());
     }
 }

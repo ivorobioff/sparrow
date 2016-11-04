@@ -11,7 +11,12 @@ class DocumentSerializer extends Serializer
     public function __invoke(Document $document)
     {
         return [
-            'id' => $document->getId()
+            'id' => $document->getId(),
+            'token' => $document->getToken(),
+            'format' => $document->getFormat(),
+            'name' => $document->getName(),
+            'url' => 'https://what.org'.$document->getUri(),
+            'uploadedAt' => $this->datetime($document->getUploadedAt())
         ];
     }
 }

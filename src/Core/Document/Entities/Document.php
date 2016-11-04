@@ -53,11 +53,16 @@ class Document
     /**
      * @var DateTime
      */
-    private $uploadAt;
-    public function setUploadedAt(DateTime $datetime) { $this->uploadAt = $datetime; }
-    public function getUploadedAt() { return $this->uploadAt; }
+    private $uploadedAt;
+    public function setUploadedAt(DateTime $datetime) { $this->uploadedAt = $datetime; }
+    public function getUploadedAt() { return $this->uploadedAt; }
 
     private $usage = 0;
     public function increaseUsage() { $this->usage ++; }
     public function decreaseUsage() { $this->usage --; }
+
+    public function __construct()
+    {
+        $this->setUploadedAt(new DateTime());
+    }
 }

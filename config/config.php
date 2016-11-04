@@ -7,7 +7,8 @@ return [
     'packages' => [
         'Thing',
         'User',
-        'Session'
+        'Session',
+        'Document'
     ],
 
     'doctrine' => [

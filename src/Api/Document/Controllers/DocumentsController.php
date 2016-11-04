@@ -4,7 +4,6 @@ use ImmediateSolutions\Api\Document\Processors\DocumentsProcessor;
 use ImmediateSolutions\Api\Document\Serializers\DocumentSerializer;
 use ImmediateSolutions\Api\Support\Controller;
 use ImmediateSolutions\Core\Document\Services\DocumentService;
-use ImmediateSolutions\Support\Validation\ErrorsThrowableCollection;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -31,13 +30,7 @@ class DocumentsController extends Controller
      */
     public function store(DocumentsProcessor $processor)
     {
-        try {
-            $document = $this->documentService->create($processor->createPayload());
-        } catch (ErrorsThrowableCollection $errors) {
-            $errors['document'] = $errors['location'];
-            unset($errors['location']);
-            throw $errors;
-        }
+        $document = $this->documentService->create($processor->getUploadedFile());
 
         return $this->reply->single($document, $this->serializer(DocumentSerializer::class));
     }

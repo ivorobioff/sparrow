@@ -1,6 +1,7 @@
 <?php
 namespace ImmediateSolutions\Infrastructure;
 use Doctrine\ORM\EntityManagerInterface;
+use ImmediateSolutions\Core\Document\Interfaces\StorageInterface;
 use ImmediateSolutions\Core\Session\Interfaces\SessionPreferenceInterface;
 use ImmediateSolutions\Support\Core\Interfaces\TokenGeneratorInterface;
 use ImmediateSolutions\Core\User\Interfaces\PasswordEncryptorInterface;
@@ -31,6 +32,7 @@ abstract class AbstractContainerRegister implements ContainerRegisterInterface
             ->service(EnvironmentInterface::class, Environment::class)
             ->service(PasswordEncryptorInterface::class, PasswordEncryptor::class)
             ->service(TokenGeneratorInterface::class, TokenGenerator::class)
+            ->service(StorageInterface::class, Storage::class)
             ->service(SessionPreferenceInterface::class, SessionPreference::class)
             ->service(LoggerInterface::class, new MonologLoggerFactory());
     }
