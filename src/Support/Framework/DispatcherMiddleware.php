@@ -1,6 +1,6 @@
 <?php
 namespace ImmediateSolutions\Support\Framework;
-use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>
@@ -21,11 +21,11 @@ class DispatcherMiddleware implements MiddlewareInterface
     }
 
     /**
-     * @param RequestInterface $request
+     * @param ServerRequestInterface $request
      * @param callable $next
      * @return mixed
      */
-    public function handle(RequestInterface $request, callable $next = null)
+    public function handle(ServerRequestInterface $request, callable $next = null)
     {
         /**
          * @var DispatcherInterface $dispatcher

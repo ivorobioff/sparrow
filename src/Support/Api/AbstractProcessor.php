@@ -16,7 +16,7 @@ use ImmediateSolutions\Support\Validation\Rules\Moment;
 use ImmediateSolutions\Support\Validation\Rules\StringCast;
 use ImmediateSolutions\Support\Validation\Rules\Walk;
 use ImmediateSolutions\Support\Validation\Source\ArraySourceHandler;
-use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
 
 /**
@@ -25,7 +25,7 @@ use RuntimeException;
 abstract class AbstractProcessor
 {
     /**
-     * @var RequestInterface
+     * @var ServerRequestInterface
      */
     protected $request;
 
@@ -50,7 +50,7 @@ abstract class AbstractProcessor
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->request = $container->get(RequestInterface::class);
+        $this->request = $container->get(ServerRequestInterface::class);
     }
 
     /**

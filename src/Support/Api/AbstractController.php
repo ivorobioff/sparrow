@@ -7,7 +7,7 @@ use ImmediateSolutions\Support\Pagination\Describer;
 use ImmediateSolutions\Support\Pagination\PaginationProviderInterface;
 use ImmediateSolutions\Support\Pagination\Paginator;
 use ImmediateSolutions\Support\Permissions\ProtectableInterface;
-use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>
@@ -25,7 +25,7 @@ abstract class AbstractController implements ProtectableInterface
     protected $container;
 
     /**
-     * @var RequestInterface
+     * @var ServerRequestInterface
      */
     protected $request;
 
@@ -36,7 +36,7 @@ abstract class AbstractController implements ProtectableInterface
     {
         $this->container = $container;
         $this->reply = $container->get(Reply::class);
-        $this->request = $container->get(RequestInterface::class);
+        $this->request = $container->get(ServerRequestInterface::class);
 
         if (method_exists($this, 'initialize')){
             $this->container->call([$this, 'initialize']);

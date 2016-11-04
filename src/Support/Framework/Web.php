@@ -1,6 +1,6 @@
 <?php
 namespace ImmediateSolutions\Support\Framework;
-use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\ServerRequestFactory;
 use Zend\Diactoros\Response\SapiEmitter;
 
@@ -35,7 +35,7 @@ class Web
 
         $request = new Request(ServerRequestFactory::fromGlobals());
 
-        $this->container->alias(RequestInterface::class, $request);
+        $this->container->alias(ServerRequestInterface::class, $request);
 
         $this->container->instance(DispatcherInterface::class, Dispatcher::class);
 

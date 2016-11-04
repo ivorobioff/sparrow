@@ -3,7 +3,7 @@ namespace ImmediateSolutions\Api\Support;
 use ImmediateSolutions\Core\Session\Entities\Session;
 use ImmediateSolutions\Core\Session\Services\SessionService;
 use ImmediateSolutions\Support\Framework\ContainerInterface;
-use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>
@@ -17,9 +17,9 @@ class SessionFactory
     public function __invoke(ContainerInterface $container)
     {
         /**
-         * @var RequestInterface $request
+         * @var ServerRequestInterface $request
          */
-        $request = $container->get(RequestInterface::class);
+        $request = $container->get(ServerRequestInterface::class);
 
         $token = $request->getHeader('Token')[0] ?? null;
 

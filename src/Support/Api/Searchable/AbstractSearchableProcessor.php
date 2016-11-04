@@ -9,7 +9,7 @@ use ImmediateSolutions\Support\Api\Searchable\Resolvers\DayResolver;
 use ImmediateSolutions\Support\Api\Searchable\Resolvers\EnumResolver;
 use ImmediateSolutions\Support\Api\Searchable\Resolvers\IntResolver;
 use ImmediateSolutions\Support\Framework\ContainerInterface;
-use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
 
 /**
@@ -28,7 +28,7 @@ abstract class AbstractSearchableProcessor
     private $data;
 
     /**
-     * @var RequestInterface
+     * @var ServerRequestInterface
      */
     protected $request;
 
@@ -43,7 +43,7 @@ abstract class AbstractSearchableProcessor
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->request = $container->get(RequestInterface::class);
+        $this->request = $container->get(ServerRequestInterface::class);
     }
 
     /**

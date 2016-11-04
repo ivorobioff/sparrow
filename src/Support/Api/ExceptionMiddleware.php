@@ -7,7 +7,7 @@ use ImmediateSolutions\Support\Framework\Exceptions\AbstractHttpException;
 use ImmediateSolutions\Support\Framework\MiddlewareInterface;
 use ImmediateSolutions\Support\Validation\Error;
 use ImmediateSolutions\Support\Validation\ErrorsThrowableCollection;
-use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Exception;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
@@ -49,11 +49,11 @@ class ExceptionMiddleware implements MiddlewareInterface
     }
 
     /**
-     * @param RequestInterface $request
+     * @param ServerRequestInterface $request
      * @param callable $next
      * @return mixed
      */
-    public function handle(RequestInterface $request, callable $next)
+    public function handle(ServerRequestInterface $request, callable $next)
     {
         try {
             $response = $next($request);

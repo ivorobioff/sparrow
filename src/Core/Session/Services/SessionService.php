@@ -8,6 +8,7 @@ use ImmediateSolutions\Core\User\Validation\CredentialsValidator;
 use ImmediateSolutions\Core\Support\Service;
 use ImmediateSolutions\Core\User\Services\UserService;
 use ImmediateSolutions\Support\Validation\PresentableException;
+use DateTime;
 
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>
@@ -124,5 +125,12 @@ class SessionService extends Service
     public function getByToken($token)
     {
         return $this->entityManager->getRepository(Session::class)->findOneBy(['token' => $token]);
+    }
+
+    public function deleteAllExpired()
+    {
+        $this->entityManager->getRepository(Session::class)->delete([
+            'expireAt' => ['<', new DateTime()]
+        ]);
     }
 }

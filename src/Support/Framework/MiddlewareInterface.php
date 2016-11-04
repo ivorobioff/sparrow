@@ -1,6 +1,6 @@
 <?php
 namespace ImmediateSolutions\Support\Framework;
-use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>
@@ -8,9 +8,9 @@ use Psr\Http\Message\RequestInterface;
 interface MiddlewareInterface
 {
     /**
-     * @param RequestInterface $request
+     * @param ServerRequestInterface $request
      * @param callable $next
      * @return mixed
      */
-    public function handle(RequestInterface $request, callable $next);
+    public function handle(ServerRequestInterface $request, callable $next);
 }

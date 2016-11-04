@@ -1,6 +1,6 @@
 <?php
 namespace ImmediateSolutions\Support\Framework;
-use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>
@@ -18,7 +18,7 @@ class Action
     private $callback;
 
     /**
-     * @var RequestInterface
+     * @var ServerRequestInterface
      */
     private $request;
 
@@ -49,15 +49,15 @@ class Action
     }
 
     /**
-     * @param RequestInterface $request
+     * @param ServerRequestInterface $request
      */
-    public function setRequest(RequestInterface $request)
+    public function setRequest(ServerRequestInterface $request)
     {
         $this->request = $request;
     }
 
     /**
-     * @return RequestInterface
+     * @return ServerRequestInterface
      */
     public function getRequest()
     {

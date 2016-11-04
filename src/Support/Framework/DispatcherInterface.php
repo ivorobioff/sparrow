@@ -1,6 +1,6 @@
 <?php
 namespace ImmediateSolutions\Support\Framework;
-use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>
@@ -8,7 +8,7 @@ use Psr\Http\Message\RequestInterface;
 interface DispatcherInterface
 {
     /**
-     * @param RequestInterface $request
+     * @param ServerRequestInterface $request
      */
-    public function dispatch(RequestInterface $request);
+    public function dispatch(ServerRequestInterface $request);
 }

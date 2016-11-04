@@ -3,7 +3,7 @@ namespace ImmediateSolutions\Support\Framework;
 
 use ImmediateSolutions\Support\Framework\Exceptions\MethodNotAllowedHttpException;
 use ImmediateSolutions\Support\Framework\Exceptions\NotFoundHttpException;
-use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use FastRoute\RouteCollector as FastRouteCollector;
 use FastRoute\RouteParser\Std as FastParser;
 use FastRoute\DataGenerator\GroupCountBased as FastGenerator;
@@ -29,10 +29,10 @@ class Dispatcher implements DispatcherInterface
     }
 
     /**
-     * @param RequestInterface $request
+     * @param ServerRequestInterface $request
      * @return ResponseInterface
      */
-    public function dispatch(RequestInterface $request)
+    public function dispatch(ServerRequestInterface $request)
     {
         $parser = new FastParser();
         $generator = new FastGenerator();

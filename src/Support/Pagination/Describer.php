@@ -1,6 +1,6 @@
 <?php
 namespace ImmediateSolutions\Support\Pagination;
-use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>
@@ -8,14 +8,14 @@ use Psr\Http\Message\RequestInterface;
 class Describer implements DescriberInterface
 {
     /**
-     * @var RequestInterface
+     * @var ServerRequestInterface
      */
     private $request;
 
     /**
-     * @param RequestInterface $request
+     * @param ServerRequestInterface $request
      */
-    public function __construct(RequestInterface $request)
+    public function __construct(ServerRequestInterface $request)
     {
         $this->request = $request;
     }
