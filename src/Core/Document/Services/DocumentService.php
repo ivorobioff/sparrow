@@ -78,7 +78,13 @@ class DocumentService extends Service
      */
     public function exists($id)
     {
-        return $this->entityManager->getRepository(Document::class)->exists(['id' => $id]);
+        if (is_array($id)){
+            return count($id) === $this->entityManager
+                ->getRepository(Document::class)->count(['id' => ['in', $id]]);
+        }
+
+        return $this->entityManager->getRepository(Document::class)
+            ->exists(['id' => $id]);
     }
 
 

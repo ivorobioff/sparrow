@@ -24,7 +24,7 @@ class Unique extends AbstractRule
 		$values = [];
 
 		foreach ($collection as $value){
-			if (in_array($value, $values)){
+			if (in_array($value, $values, true)){
 				return $this->getError();
 			}
 

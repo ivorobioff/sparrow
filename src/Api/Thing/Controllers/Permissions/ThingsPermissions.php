@@ -1,5 +1,6 @@
 <?php
 namespace ImmediateSolutions\Api\Thing\Controllers\Permissions;
+use ImmediateSolutions\Api\Thing\Protectors\ThingOwnerProtector;
 use ImmediateSolutions\Support\Permissions\AbstractActionsPermissions;
 
 /**
@@ -13,9 +14,11 @@ class ThingsPermissions extends AbstractActionsPermissions
     protected function permissions()
     {
         return [
-            'index' => 'all',
-            'show' => 'all',
-            'store' => 'all'
+            'index' => 'auth',
+            'store' => 'auth',
+            'show' => ThingOwnerProtector::class,
+            'destroy' => ThingOwnerProtector::class,
+            'update' => ThingOwnerProtector::class
         ];
     }
 }

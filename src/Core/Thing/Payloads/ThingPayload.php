@@ -45,7 +45,7 @@ class ThingPayload implements ClearableAwareInterface
      * @var IdentifierPayload
      */
     private $image;
-    public function setImage(IdentifierPayload $identifier) { $this->image = $identifier; }
+    public function setImage(IdentifierPayload $identifier = null) { $this->image = $identifier; }
     public function getImage() { return $this->image; }
 
     /**

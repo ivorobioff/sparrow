@@ -60,7 +60,7 @@ class Each extends AbstractRule
 	 */
 	protected function preCheck($traversable)
 	{
-		if (!is_traversable($traversable)){
+		if (!is_array($traversable) && !$traversable instanceof Traversable){
 			return $this->setMessage('The collection is invalid.')->getError();
 		}
 

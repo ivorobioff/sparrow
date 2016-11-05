@@ -104,6 +104,16 @@ class CategoryService extends Service
      * @param int $userId
      * @return Category[]
      */
+    public function getAll($userId)
+    {
+        return $this->entityManager->getRepository(Category::class)
+            ->findBy(['user' => $userId]);
+    }
+
+    /**
+     * @param int $userId
+     * @return Category[]
+     */
     public function getAllRoots($userId)
     {
         return $this->entityManager->getRepository(Category::class)

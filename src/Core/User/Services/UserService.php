@@ -4,6 +4,7 @@ use ImmediateSolutions\Core\Session\Entities\Session;
 use ImmediateSolutions\Core\Support\Service;
 use ImmediateSolutions\Core\Thing\Entities\Category;
 use ImmediateSolutions\Core\Thing\Entities\Location;
+use ImmediateSolutions\Core\Thing\Entities\Thing;
 use ImmediateSolutions\Core\User\Entities\User;
 use ImmediateSolutions\Core\User\Interfaces\PasswordEncryptorInterface;
 use ImmediateSolutions\Core\User\Payloads\CredentialsPayload;
@@ -170,6 +171,17 @@ class UserService extends Service
             ->exists(['user' => $userId, 'id' => $locationId]);
     }
 
+    /**
+     * @param int $userId
+     * @param array $locationIds
+     * @return bool
+     */
+    public function hasLocations($userId, array $locationIds)
+    {
+        return count($locationIds) === $this->entityManager
+            ->getRepository(Location::class)->count(['user' => $userId, 'id' => ['in', $locationIds]]);
+    }
+
 
     /**
      * @param int $userId
@@ -180,5 +192,16 @@ class UserService extends Service
     {
         return $this->entityManager->getRepository(Category::class)
             ->exists(['user' => $userId, 'id' => $categoryId]);
+    }
+
+    /**
+     * @param int $userId
+     * @param int $thingId
+     * @return bool
+     */
+    public function hasThing($userId, $thingId)
+    {
+        return $this->entityManager->getRepository(Thing::class)
+            ->exists(['user' => $userId, 'id' => $thingId]);
     }
 }

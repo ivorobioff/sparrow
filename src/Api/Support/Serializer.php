@@ -23,12 +23,17 @@ abstract class Serializer
     }
 
     /**
-     * @param $serializer
-     * @param $object
+     * @param string $serializer
+     * @param object $object
+     * @param $initializer
      */
-    protected function delegate($serializer, $object)
+    protected function delegate($serializer, $object, callable $initializer = null)
     {
         $serializer = $this->container->get($serializer);
+
+        if ($initializer){
+            $initializer($serializer);
+        }
 
         return $serializer($object);
     }

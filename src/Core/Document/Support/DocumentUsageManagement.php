@@ -1,5 +1,5 @@
 <?php
-namespace ImmediateSolutions\Core\Document\Entities\Support;
+namespace ImmediateSolutions\Core\Document\Support;
 
 use ImmediateSolutions\Core\Document\Entities\Document;
 use Traversable;

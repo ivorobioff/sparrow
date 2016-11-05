@@ -1,6 +1,7 @@
 <?php
 namespace ImmediateSolutions\Infrastructure;
 use Doctrine\ORM\EntityManagerInterface;
+use ImmediateSolutions\Core\Document\Interfaces\DocumentPreferenceInterface;
 use ImmediateSolutions\Core\Document\Interfaces\StorageInterface;
 use ImmediateSolutions\Core\Session\Interfaces\SessionPreferenceInterface;
 use ImmediateSolutions\Support\Core\Interfaces\TokenGeneratorInterface;
@@ -34,6 +35,7 @@ abstract class AbstractContainerRegister implements ContainerRegisterInterface
             ->service(TokenGeneratorInterface::class, TokenGenerator::class)
             ->service(StorageInterface::class, Storage::class)
             ->service(SessionPreferenceInterface::class, SessionPreference::class)
+            ->service(DocumentPreferenceInterface::class, DocumentPreference::class)
             ->service(LoggerInterface::class, new MonologLoggerFactory());
     }
 }

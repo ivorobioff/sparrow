@@ -5,6 +5,7 @@ use ImmediateSolutions\Core\Document\Entities\Document;
 use ImmediateSolutions\Core\Document\Support\DocumentUsageManagementTrait;
 use ImmediateSolutions\Core\Thing\Enums\Attitude;
 use DateTime;
+use ImmediateSolutions\Core\User\Entities\User;
 
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>
@@ -57,14 +58,14 @@ class Thing
     /**
      * @param Document $document
      */
-    public function setImage(Document $document)
+    public function setImage(Document $document = null)
     {
         $this->handleUsageOfOneDocument($this->getImage(), $document);
         $this->image = $document;
     }
 
     private $category;
-    public function setCategory(Category $category) { $this->category = $category; }
+    public function setCategory(Category $category = null) { $this->category = $category; }
     public function getCategory()  { return $this->category; }
 
     /**
@@ -73,16 +74,17 @@ class Thing
     private $locations;
     public function getLocations() { return $this->locations; }
 
-    public function addLocation(Location $location)
-    {
-        $this->locations->add($location);
-    }
-
-    public function clearLocations()
+    /**
+     * @param Location[] $locations
+     */
+    public function setLocations(array $locations)
     {
         $this->locations->clear();
-    }
 
+        foreach ($locations as $location){
+            $this->locations->add($location);
+        }
+    }
 
     /**
      * @var DateTime
@@ -91,8 +93,16 @@ class Thing
     public function setCreatedAt(DateTime $datetime) { $this->createdAt = $datetime; }
     public function getCreatedAt() { return $this->createdAt; }
 
+    /**
+     * @var User
+     */
+    private $user;
+    public function setUser(User $user) { $this->user = $user; }
+    public function getUser() { return $this->user; }
+
     public function __construct()
     {
         $this->locations = new ArrayCollection();
+        $this->setCreatedAt(new DateTime());
     }
 }
