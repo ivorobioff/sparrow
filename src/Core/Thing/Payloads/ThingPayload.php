@@ -58,7 +58,7 @@ class ThingPayload implements ClearableAwareInterface
     /**
      * @var array
      */
-    private $locations = [];
+    private $locations;
     public function setLocations(array $locations) { $this->locations = $locations; }
     public function getLocations() { return $this->locations; }
 }

@@ -1,10 +1,10 @@
 <?php
 namespace ImmediateSolutions\Api\Support;
 use ImmediateSolutions\Core\Document\Payloads\IdentifierPayload;
-use ImmediateSolutions\Core\Document\Payloads\IdentifiersPayload;
 use ImmediateSolutions\Support\Api\AbstractProcessor;
 use ImmediateSolutions\Support\Validation\Source\ClearableAwareInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
+use Closure;
 
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>
@@ -15,8 +15,9 @@ abstract class Processor extends AbstractProcessor
      * @param $object
      * @param $property
      * @param callable $modifier
+     * @param bool $nullable
      */
-    protected function set($object, $property, callable $modifier = null)
+    protected function set($object, $property, callable $modifier = null, $nullable = true)
     {
         if (!$this->has($property)){
             return ;
@@ -30,39 +31,60 @@ abstract class Processor extends AbstractProcessor
             $value = $modifier($value);
         }
 
+        if ($nullable || $value !== null){
+            $accessor->setValue($object, $property, $value);
+        }
 
-        $accessor->setValue($object, $property, $value);
-
-        if ($value === null && $object instanceof ClearableAwareInterface){
+        if ($nullable && $value === null && $object instanceof ClearableAwareInterface){
             $object->addClearable($property);
         }
     }
 
     /**
-     * @param int|array $idOrData
-     * @return IdentifierPayload
+     * @return Closure
      */
-    public function asDocument($idOrData)
+    public function asDocument()
     {
-        if (is_array($idOrData)){
-            return new IdentifierPayload($idOrData['id'], $idOrData['token']);
-        }
+        return function($value){
+            if ($value === null){
+                return null;
+            }
 
-        return new IdentifierPayload($idOrData);
+            if (is_array($value)){
+                return new IdentifierPayload($value['id'], $value['token']);
+            }
+
+            return new IdentifierPayload($value);
+        };
     }
 
     /**
-     * @param array $data
-     * @return IdentifiersPayload
+     * @return Closure
      */
-    public function asDocuments(array $data)
+    public function asDocuments()
     {
-        $result = [];
+        return function($data) {
 
-        foreach ($data as $item){
-            $result[] = $this->asDocument($data);
-        }
+            if ($data === null){
+                return null;
+            }
 
-        return $result;
+            return array_map($this->asDocument(), $data);
+        };
+    }
+
+    /**
+     * @param $class
+     * @return Closure
+     */
+    protected function asEnum($class)
+    {
+        return function($value) use ($class){
+            if ($value === null){
+                return null;
+            }
+
+            return new $class($value);
+        };
     }
 }

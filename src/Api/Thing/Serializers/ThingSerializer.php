@@ -16,6 +16,7 @@ class ThingSerializer extends Serializer
             'id' => $thing->getId(),
             'name' => $thing->getName(),
             'description' => $thing->getDescription(),
+            'attitude' => (string) $thing->getAttitude(),
             'rate' => $thing->getRate(),
             'locations' => array_map(function(Location $location){
                 return $this->delegate(LocationSerializer::class, $location);

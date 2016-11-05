@@ -32,13 +32,11 @@ class ThingsProcessor extends Processor
 
         $this->set($payload, 'name');
         $this->set($payload, 'description');
-        $this->set($payload, 'attitude', function($value){
-            return new Attitude($value);
-        });
+        $this->set($payload, 'attitude', $this->asEnum(Attitude::class), false);
         $this->set($payload, 'category');
-        $this->set($payload, 'locations');
+        $this->set($payload, 'locations', null, false);
         $this->set($payload, 'rate');
-        $this->set($payload, 'image', [$this, 'asDocument']);
+        $this->set($payload, 'image', $this->asDocument());
 
         return $payload;
     }

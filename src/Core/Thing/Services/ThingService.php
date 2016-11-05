@@ -126,7 +126,7 @@ class ThingService extends Service
         $builder->from(Thing::class, 't')->select('t');
 
         $builder
-            ->andWhere($builder->expr()->eq('l.user', ':user'))
+            ->andWhere($builder->expr()->eq('t.user', ':user'))
             ->setParameter('user', $userId);
 
         (new Filter())->apply($builder, $options->getCriteria(), new ThingFilterResolver())
