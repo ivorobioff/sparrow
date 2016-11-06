@@ -13,6 +13,11 @@ class Router implements RouterInterface
     private $collector;
 
     /**
+     * @var string
+     */
+    private $namespace = '';
+
+    /**
      * @param RouteCollector $collector
      */
     public function __construct(RouteCollector $collector)
@@ -27,7 +32,7 @@ class Router implements RouterInterface
      */
     public function get($pattern, $callback)
     {
-        $this->collector->addRoute('GET', $pattern, $callback);
+        $this->collector->addRoute('GET', $this->namespace.$pattern, $callback);
         return $this;
     }
 
@@ -38,7 +43,7 @@ class Router implements RouterInterface
      */
     public function post($pattern, $callback)
     {
-        $this->collector->addRoute('POST', $pattern, $callback);
+        $this->collector->addRoute('POST', $this->namespace.$pattern, $callback);
         return $this;
     }
 
@@ -49,7 +54,7 @@ class Router implements RouterInterface
      */
     public function put($pattern, $callback)
     {
-        $this->collector->addRoute('PUT', $pattern, $callback);
+        $this->collector->addRoute('PUT', $this->namespace.$pattern, $callback);
         return $this;
     }
 
@@ -60,7 +65,7 @@ class Router implements RouterInterface
      */
     public function delete($pattern, $callback)
     {
-        $this->collector->addRoute('DELETE', $pattern, $callback);
+        $this->collector->addRoute('DELETE', $this->namespace.$pattern, $callback);
         return $this;
     }
 
@@ -71,7 +76,23 @@ class Router implements RouterInterface
      */
     public function patch($pattern, $callback)
     {
-        $this->collector->addRoute('PATCH', $pattern, $callback);
+        $this->collector->addRoute('PATCH', $this->namespace.$pattern, $callback);
+        return $this;
+    }
+
+    /**
+     * @param string $namespace
+     * @param callable $callback
+     * @return $this
+     */
+    public function group($namespace, callable $callback)
+    {
+        $this->namespace = $namespace;
+
+        $callback($this);
+
+        $this->namespace = '';
+
         return $this;
     }
 }

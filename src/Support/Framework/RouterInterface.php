@@ -7,6 +7,13 @@ namespace ImmediateSolutions\Support\Framework;
 interface RouterInterface
 {
     /**
+     * @param string $namespace
+     * @param callable $callback
+     * @return $this
+     */
+    public function group($namespace, callable $callback);
+
+    /**
      * @param string $pattern
      * @param callable|string $callback
      * @return $this

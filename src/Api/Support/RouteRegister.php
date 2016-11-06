@@ -19,11 +19,13 @@ class RouteRegister implements RouteRegisterInterface
      */
     public function register(RouterInterface $router)
     {
-        call_user_func(new UserRoutes(), $router);
-        call_user_func(new SessionRoutes(), $router);
-        call_user_func(new DocumentRoutes(), $router);
-        call_user_func(new LocationRoutes(), $router);
-        call_user_func(new CategoryRoutes(), $router);
-        call_user_func(new ThingRoutes(), $router);
+        $router->group('/api', function(RouterInterface $router){
+            call_user_func(new UserRoutes(), $router);
+            call_user_func(new SessionRoutes(), $router);
+            call_user_func(new DocumentRoutes(), $router);
+            call_user_func(new LocationRoutes(), $router);
+            call_user_func(new CategoryRoutes(), $router);
+            call_user_func(new ThingRoutes(), $router);
+        });
     }
 }
