@@ -1,6 +1,6 @@
 <html>
     <title><?=$this->escape($title)?></title>
     <body>
-        <?=$this->section('content');?>
+        <?=$this->section('page');?>
     </body>
 </html>
