@@ -2,54 +2,52 @@ $(function(){
     $('a').click(on_link_click);
 
     page('/sign-in', function(){
-
-        if (session.has()){
-            return page('/');   
-        }
-
-        var view = $($('#sign-in-view').html());
-        var signUp = $('<a  href="/sign-up" class="btn btn btn-default btn-sm navbar-btn navbar-right">Sign Up</a>');
-        var app = $('#app');
-        var menuRight = $('#menu-right');
-
-        signUp.click(on_link_click);
-
-        menuRight.html(signUp);
-
-        view.find('form').submit(function(e){
-            var f = form($(this));
-
-            var showErrors = f.showErrors;
-            f.showErrors = function(errors){
-                if (typeof errors.credentials !== 'undefined'){
-                    errors.email = errors.credentials;
-                }
-                showErrors(errors);
-            }
-
-            f.submit({url: '/sessions', session: false}, e).done(function(data){
-                localStorage.setItem('session', JSON.stringify(data));
-                page('/');
-            });
-        });
-
-        app.html(view);
+        Dispatcher.dispatch('signIn')
     });
 
     page('/sign-up', function(){
+        Dispatcher.dispatch('signUp')
+    });
 
-        if (session.has()){
-            return page('/');
+    page('/profile', function(){
+        Dispatcher.dispatch('profile');
+    });
+
+    page('/', function(){
+        Dispatcher.dispatch('things');
+    });
+
+    page('/things', function(){
+        Dispatcher.dispatch('things');
+    });
+
+    page('*', function(){
+        Dispatcher.dispatch('notFound');
+    });
+
+    page();
+});
+
+
+
+/* ------------------------------------------------- SUPPORT ----------------------------------------------- */
+
+var AuthDelegate = {
+
+    dispatch: function(name, c){
+        if (Session.has()){
+            page.redirect('/');
+            return false;
         }
+    },
 
+    signUp: function(){
         var view = $($('#sign-up-view').html());
-        var app = $('#app');
-        var menuRight = $('#menu-right');
         var signIn = $('<a href="/sign-in" class="btn btn btn-default btn-sm navbar-btn navbar-right">Sign In</a>');
 
         signIn.click(on_link_click);
 
-        menuRight.html(signIn);
+        this.menu.html(signIn);
 
         view.find('form').submit(function(e){
 
@@ -68,54 +66,147 @@ $(function(){
                 }
 
                 return true;
-            }
+            };
 
             f.submit({url: '/users', session: false}, e).done(function(){
-                page('/sign-in');
+                page.redirect('/sign-in');
             });
         });
 
-        app.html(view);
-    });
+        this.layout.html(view);
+    },
 
+    signIn: function(){
+        var view = $($('#sign-in-view').html());
+        var signUp = $('<a  href="/sign-up" class="btn btn btn-default btn-sm navbar-btn navbar-right">Sign Up</a>');
 
-    page('/', function(){
-        if (!session.has()){
-            return page('/sign-in');
+        signUp.click(on_link_click);
+
+        this.menu.html(signUp);
+
+        view.find('form').submit(function(e){
+            var f = form($(this));
+
+            var showErrors = f.showErrors;
+
+            f.showErrors = function(errors){
+                if (typeof errors.credentials !== 'undefined'){
+                    errors.email = errors.credentials;
+                }
+                showErrors(errors);
+            };
+
+            f.submit({url: '/sessions', session: false}, e).done(function(data){
+                localStorage.setItem('session', JSON.stringify(data));
+                page.redirect('/');
+            });
+        });
+
+        this.layout.html(view);
+    }
+};
+
+var MainDelegate = {
+
+    init: function(){
+        var s = Session.get();
+
+        var actions = $(Mustache.render(
+            $('#actions-authenticated-view').html(), { name: s.user.firstName + ' ' + s.user.lastName })
+        );
+
+        actions.find('#sign-out').click(function(e){
+            e.preventDefault();
+
+            backend('DELETE', '/sessions/' + s.id).done(function(){
+                Session.destroy();
+                page.redirect('/sign-in');
+            }).fail(function(){
+                alert('Unable to sign out!');
+            });
+        });
+
+        var nav = $($('#nav-authenticated-view').html());
+
+        this.menu.html('');
+        this.menu.append(nav);
+        this.menu.append(actions);
+    },
+
+    dispatch: function(name, c){
+        if (!Session.has()){
+            page.redirect('/sign-in');
+
+            return false;
+        }
+    },
+
+    things: function(){
+        this.layout.html('<h1>Things</h1>');
+    },
+
+    profile: function(c){
+        this.layout.html('<h1>Profile</h1>');
+    },
+
+    notFound: function(){
+        this.layout.html('<h1>Not Found!</h1>');
+    }
+};
+
+var Dispatcher = {
+
+    delegates: [MainDelegate, AuthDelegate],
+
+    _initialized: false,
+
+    dispatch: function(name, c) {
+
+        var _this = this;
+
+        if (_this._initialized === false){
+            _this.menu = $('#menu');
+            _this.layout = $('#app');
+            _this._initialized = true;
         }
 
-        when_authenticated();
+        var resolve = function(name){
+            for (var i in _this.delegates){
 
-        var app = $('#app');
+                var delegate = _this.delegates[i];
 
-        app.html('');
-    });
+                if (typeof delegate[name] === 'function'){
+                    return delegate;
+                }
+            }
+        };
 
-    page('*', function(){
-        var app = $('#app');
-        app.html('<h1>Oops... the page is not found!</h1>');
-    })
+        var delegate = resolve(name);
 
-    page();
-});
+        delegate.menu = this.menu;
+        delegate.layout = this.layout;
 
-function when_authenticated() {
-    var menuRight = $('#menu-right');
-    var signOut = $('<button class="btn btn btn-default btn-sm navbar-btn navbar-right">Sign Out</a>');
+        if (typeof delegate['dispatch'] === 'function'){
+            if (delegate.dispatch() === false){
+                return ;
+            }
+        }
 
-    signOut.click(function(){
-        backend('DELETE', '/sessions/' + session.get().id).done(function(){
-            session.destroy();
-            page('/sign-in');
-        }).fail(function(){
-            alert('Unable to sign out!');
-        });
-    });
+        if (_this._currnet !== delegate){
+            _this._currnet = delegate;
 
-    menuRight.html(signOut);
-}
+            if (typeof delegate['init'] === 'function'){
+                delegate.init();
+            }
+        }
 
-var session = {
+        _this.layout.html('');
+
+        delegate[name].apply(delegate, c);
+    }
+};
+
+var Session = {
     get: function(){
         var session = localStorage.getItem('session');
 
@@ -133,7 +224,7 @@ var session = {
     destroy: function(){
         localStorage.removeItem('session');
     }
-}
+};
 
 function form(el)  {
     var o = {
@@ -157,7 +248,7 @@ function form(el)  {
             var data = {};
 
             el.find('[name]').each(function(i, el){
-                var el = $(el);
+                el = $(el);
                 var value = el.val();
 
                 if (value){
@@ -192,15 +283,20 @@ function form(el)  {
                 input.parents('.form-group').addClass('has-error');
             });
         }
-    }
+    };
 
     return o;
 }
 
 function on_link_click(e) {
     var url = $(this).attr('href');
-    page(url);
+
+    if (url === '#'){
+        return ;
+    }
+
     e.preventDefault();
+    return page(url);
 }
 
 function backend(method, endpoint, data){
@@ -226,7 +322,7 @@ function backend(method, endpoint, data){
     }
 
     if (options.session == true){
-        var s = session.get();
+        var s = Session.get();
         
         if (s !== null){
 
@@ -241,13 +337,13 @@ function backend(method, endpoint, data){
                     s = data;
                 }).fail(function(){
                     localStorage.removeItem('session');
-                    page('/');
+                    page.redirect('/');
                 });
             }
             
             config.headers = { token: s.token }
         } else {
-            page('/');
+            page.redirect('/');
         }
     }
 
