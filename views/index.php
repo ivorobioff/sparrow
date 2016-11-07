@@ -78,12 +78,12 @@
                 <div class="well bs-component">
                     <form>
                         <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" class="form-control" id="email">
+                            <label class="control-label" for="email">Email</label>
+                            <input type="email" name="email" class="form-control" id="email">
                         </div>
                         <div class="form-group">
-                            <label for="email">Password</label>
-                            <input type="password" class="form-control" id="email">
+                            <label class="control-label" for="password">Password</label>
+                            <input type="password" name="password" class="form-control" id="password">
                         </div>
 
                         <button class="btn btn-primary pull-right">Sing In</button>

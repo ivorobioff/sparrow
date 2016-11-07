@@ -1,90 +1,201 @@
-page('/sign-in', function(){
-    var view = $($('#sign-in-view').html());
-    var signUp = $('<a  href="/sign-up" class="btn btn btn-default btn-sm navbar-btn navbar-right">Sign Up</a>');
-    var app = $('#app');
-    var menuRight = $('#menu-right');
+$(function(){
+    $('a').click(on_link_click);
 
-    signUp.click(on_link_click);
+    page('/sign-in', function(){
 
-    menuRight.html(signUp);
-
-    app.html(view);
-})
-
-page('/sign-up', function(){
-    var view = $($('#sign-up-view').html());
-    var app = $('#app');
-    var menuRight = $('#menu-right');
-    var signIn = $('<a href="/sign-in" class="btn btn btn-default btn-sm navbar-btn navbar-right">Sign In</a>');
-
-    signIn.click(on_link_click);
-
-    menuRight.html(signIn);
-
-    view.find('form').submit(function(e){
-        e.preventDefault();
-
-        var form = $(this);
-
-        var data = {};
-
-        form.find('.has-error').removeClass('has-error');
-        form.find('.help-block').remove();
-
-        var pass1 = form.find('#password1').val();
-        var pass2Input = form.find('#password2');
-        var pass2 = pass2Input.val();
-
-        if (pass1 !== pass2){
-            pass2Input.after('<div class="help-block">This password does not match the password above.</div>');
-            pass2Input.parents('.form-group').addClass('has-error');
-
-            return ;
+        if (session.has()){
+            return page('/');   
         }
 
-        form.find('[name]').each(function(i, el){
-            var el = $(el);
-            var value = el.val();
+        var view = $($('#sign-in-view').html());
+        var signUp = $('<a  href="/sign-up" class="btn btn btn-default btn-sm navbar-btn navbar-right">Sign Up</a>');
+        var app = $('#app');
+        var menuRight = $('#menu-right');
 
-            if (value){
-                data[el.attr('name')] = value
+        signUp.click(on_link_click);
+
+        menuRight.html(signUp);
+
+        view.find('form').submit(function(e){
+            var f = form($(this));
+
+            var showErrors = f.showErrors;
+            f.showErrors = function(errors){
+                if (typeof errors.credentials !== 'undefined'){
+                    errors.email = errors.credentials;
+                }
+                showErrors(errors);
             }
+
+            f.submit({url: '/sessions', session: false}, e).done(function(data){
+                localStorage.setItem('session', JSON.stringify(data));
+                page('/');
+            });
         });
 
-        form.find('select, input, button').attr('disabled', 'disabled');
+        app.html(view);
+    });
 
-        backend('POST', '/users', data).always(function(){
-            form.find('select, input, button').removeAttr('disabled');
-        }).fail(function(x){
-            var data = $.parseJSON(x.responseText);
-            if (x.status == 422){
-                $.each(data.errors, function(name, meta){
-                    var input = form.find('[name="' + name + '"]');
-                    input.after('<div class="help-block">' + meta.message + '</div>');
-                    input.parents('.form-group').addClass('has-error');
-                });
-            } else {
-                form.prepend('<div class="alert alert-danger">' + data.message + '</div>')
+    page('/sign-up', function(){
+
+        if (session.has()){
+            return page('/');
+        }
+
+        var view = $($('#sign-up-view').html());
+        var app = $('#app');
+        var menuRight = $('#menu-right');
+        var signIn = $('<a href="/sign-in" class="btn btn btn-default btn-sm navbar-btn navbar-right">Sign In</a>');
+
+        signIn.click(on_link_click);
+
+        menuRight.html(signIn);
+
+        view.find('form').submit(function(e){
+
+            var f = form($(this));
+
+            f.validate = function(){
+                var pass1 = f.el.find('#password1').val();
+                var pass2Input = f.el.find('#password2');
+                var pass2 = pass2Input.val();
+
+                if (pass1 !== pass2){
+                    pass2Input.after('<div class="help-block">This password does not match the password above.</div>');
+                    pass2Input.parents('.form-group').addClass('has-error');
+
+                    return false;
+                }
+
+                return true;
             }
 
-        }).done(function(){
+            f.submit({url: '/users', session: false}, e).done(function(){
+                page('/sign-in');
+            });
+        });
+
+        app.html(view);
+    });
+
+
+    page('/', function(){
+        if (!session.has()){
+            return page('/sign-in');
+        }
+
+        when_authenticated();
+
+        var app = $('#app');
+
+        app.html('');
+    });
+
+    page('*', function(){
+        var app = $('#app');
+        app.html('<h1>Oops... the page is not found!</h1>');
+    })
+
+    page();
+});
+
+function when_authenticated() {
+    var menuRight = $('#menu-right');
+    var signOut = $('<button class="btn btn btn-default btn-sm navbar-btn navbar-right">Sign Out</a>');
+
+    signOut.click(function(){
+        backend('DELETE', '/sessions/' + session.get().id).done(function(){
+            session.destroy();
             page('/sign-in');
+        }).fail(function(){
+            alert('Unable to sign out!');
         });
     });
 
-    app.html(view);
-})
+    menuRight.html(signOut);
+}
 
-page('*', function(){
-    page('/sign-in')
-})
+var session = {
+    get: function(){
+        var session = localStorage.getItem('session');
 
-page();
+        if (session === null){
+            return null;
+        }
 
-$(function(){
-    $('a').click(on_link_click);
-});
+        return $.parseJSON(session);
+    },
 
+    has: function(){
+        return localStorage.getItem('session') !== null;
+    },
+
+    destroy: function(){
+        localStorage.removeItem('session');
+    }
+}
+
+function form(el)  {
+    var o = {
+        el: el,
+        validate: function(){ return true;},
+        
+        submit: function (options, e) {
+            e.preventDefault();
+
+            if (typeof options === 'string'){
+                options = { url: options };
+            }
+
+            el.find('.has-error').removeClass('has-error');
+            el.find('.help-block').remove();
+
+            if (this.validate() === false){
+                return ;
+            }
+        
+            var data = {};
+
+            el.find('[name]').each(function(i, el){
+                var el = $(el);
+                var value = el.val();
+
+                if (value){
+                    data[el.attr('name')] = value
+                }
+            });
+
+            el.find('select, input, button').attr('disabled', 'disabled');
+
+            return backend({
+                 method: 'POST', 
+                 url: options.url, 
+                 session: options.session, 
+                 data: data
+                }).always(function(){
+                    el.find('select, input, button').removeAttr('disabled');
+                }).fail(function(x){
+                    var data = $.parseJSON(x.responseText);
+                    if (x.status == 422){
+                        o.showErrors(data.errors);
+                    } else {
+                        el.prepend('<div class="alert alert-danger">' + data.message + '</div>')
+                    }
+
+                });
+        },
+
+        showErrors: function(errors){
+            $.each(errors, function(name, meta){
+                var input = el.find('[name="' + name + '"]');
+                input.after('<div class="help-block">' + meta.message + '</div>');
+                input.parents('.form-group').addClass('has-error');
+            });
+        }
+    }
+
+    return o;
+}
 
 function on_link_click(e) {
     var url = $(this).attr('href');
@@ -94,14 +205,50 @@ function on_link_click(e) {
 
 function backend(method, endpoint, data){
 
+    var options = { session: true };
+
+    if (typeof method === 'string'){
+        options.url = endpoint;
+        options.data = data;
+        options.method = method;
+    } else {
+        options = $.extend(options, method);
+    }
+
     var config = {
-        url: '/api' + endpoint,
-        type: method,
+        url: '/api' + options.url,
+        type: options.method,
         contentType: 'application/json'
     };
 
-    if (typeof data !== 'undefined'){
-        config.data = JSON.stringify(data);
+    if (typeof options.data !== 'undefined'){
+        config.data = JSON.stringify(options.data);
+    }
+
+    if (options.session == true){
+        var s = session.get();
+        
+        if (s !== null){
+
+            var expiresAt = new Date(s.expiresAt);
+            var now = new Date();
+
+            // gives 10 minutes to refresh the session
+            
+            if (now.getTime() >= (expiresAt.getTime() - 600000)){
+                backend('POST', '/sessions/' + s.id + '/refresh').done(function(data){
+                    localStorage.setItem('session', JSON.stringify(data));
+                    s = data;
+                }).fail(function(){
+                    localStorage.removeItem('session');
+                    page('/');
+                });
+            }
+            
+            config.headers = { token: s.token }
+        } else {
+            page('/');
+        }
     }
 
     return $.ajax(config);
