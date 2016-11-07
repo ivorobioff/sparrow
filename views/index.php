@@ -13,7 +13,7 @@
                 </button>
                 <a class="navbar-brand" href="/">PikyPak</a>
             </div>
-            <div class="collapse navbar-collapse" id="menu-right">
+            <div class="collapse navbar-collapse" id="menu">
 
             </div>
         </div>
@@ -21,6 +21,33 @@
     <div class="container" id="app">
 
     </div>
+
+
+    <script id="nav-authenticated-view" type="text/template">
+        <ul class="nav navbar-nav">
+            <li class="active">
+                <a href="/things">Things</a>
+            </li>
+            <li>
+                <a href="/categories">Categories</a>
+            </li>
+            <li>
+                <a href="/locations">Locations</a>
+            </li>
+        </ul>
+    </script>
+
+    <script id="actions-authenticated-view" type="text/template">
+        <div class="btn-group navbar-btn btn-group-sm navbar-right" style="margin-top: 5px;">
+            <a href="/profile" class="btn btn-default">{{ name }}</a>
+            <a href="#" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></a>
+            <ul class="dropdown-menu">
+                <li><a href="/profile">Profile</a></li>
+                <li class="divider"></li>
+                <li><a href="#" id="sign-out">Sign Out</a></li>
+            </ul>
+        </div>
+    </script>
 
     <script id="sign-up-view" type="text/template">
         <div class="row">
