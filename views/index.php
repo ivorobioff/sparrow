@@ -1,4 +1,4 @@
-<?php $this->layout('layout', ['title' => 'Sparrow']); ?>
+<?php $this->layout('layout', ['title' => 'PikyPak']); ?>
 
 <?php $this->start('page');?>
 
@@ -11,7 +11,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/">No Name</a>
+                <a class="navbar-brand" href="/">PikyPak</a>
             </div>
             <div class="collapse navbar-collapse" id="menu-right">
 
@@ -29,34 +29,34 @@
             <div class="col-lg-6 well bs-component">
                 <form class="form-horizontal">
                     <div class="form-group">
-                        <label for="email" class="col-lg-3 control-label">Email</label>
+                        <label for="email" class="col-lg-3 control-label">Email<span class="obligate">*</span></label>
                         <div class="col-lg-9">
-                            <input type="email" class="form-control" id="email">
+                            <input type="email" name="email" class="form-control" id="email">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="password1" class="col-lg-3 control-label">Password</label>
+                        <label for="password1" class="col-lg-3 control-label">Password<span class="obligate">*</span></label>
                         <div class="col-lg-9">
-                            <input type="password" class="form-control" id="password1">
+                            <input type="password" name="password" class="form-control" id="password1">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="password2" class="col-lg-3 control-label no-left-padding">Re-enter password</label>
+                        <label for="password2" class="col-lg-3 control-label no-left-padding">Re-enter password<span class="obligate">*</span></label>
                         <div class="col-lg-9">
                             <input type="password" class="form-control" id="password2">
                         </div>
                     </div>
                     <hr>
                     <div class="form-group">
-                        <label for="firstName" class="col-lg-3 control-label">First name</label>
+                        <label for="firstName" class="col-lg-3 control-label">First name<span class="obligate">*</span></label>
                         <div class="col-lg-9">
-                            <input type="text" class="form-control" id="firstName">
+                            <input type="text" name="firstName" class="form-control" id="firstName">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="firstName" class="col-lg-3 control-label">Last name</label>
+                        <label for="firstName" class="col-lg-3 control-label">Last name<span class="obligate">*</span></label>
                         <div class="col-lg-9">
-                            <input type="text" class="form-control" id="lastName">
+                            <input type="text" name="lastName" class="form-control" id="lastName">
                         </div>
                     </div>
 
