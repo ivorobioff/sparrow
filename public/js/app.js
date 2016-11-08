@@ -1,28 +1,30 @@
 $(function(){
     $('a').click(on_link_click);
 
+    var delegator = new Delegator([AppDelegate]);
+
     page('/sign-in', function(){
-        Dispatcher.dispatch('signIn')
+        delegator.delegate('signIn');
     });
 
     page('/sign-up', function(){
-        Dispatcher.dispatch('signUp')
+        delegator.delegate('signUp')
     });
 
     page('/profile', function(){
-        Dispatcher.dispatch('profile');
+        delegator.delegate('profile');
     });
 
     page('/', function(){
-        Dispatcher.dispatch('things');
+        delegator.delegate('things');
     });
 
     page('/things', function(){
-        Dispatcher.dispatch('things');
+        delegator.delegate('things');
     });
 
     page('*', function(){
-        Dispatcher.dispatch('notFound');
+        delegator.delegate('notFound');
     });
 
     page();
@@ -33,12 +35,14 @@ $(function(){
 /* ------------------------------------------------- SUPPORT ----------------------------------------------- */
 
 var AuthDelegate = {
-
-    dispatch: function(name, c){
+    
+    canProceed: function(name, c){
         if (Session.has()){
             page.redirect('/');
             return false;
         }
+
+        return true;
     },
 
     signUp: function(){
@@ -108,7 +112,7 @@ var AuthDelegate = {
 
 var MainDelegate = {
 
-    init: function(){
+    didActivate: function(){
         var s = Session.get();
 
         var actions = $(Mustache.render(
@@ -133,12 +137,14 @@ var MainDelegate = {
         this.menu.append(actions);
     },
 
-    dispatch: function(name, c){
+    canProceed: function(name, c){
         if (!Session.has()){
             page.redirect('/sign-in');
 
             return false;
         }
+
+        return true;
     },
 
     things: function(){
@@ -154,11 +160,13 @@ var MainDelegate = {
     }
 };
 
-var Dispatcher = {
-
-    delegates: [MainDelegate, AuthDelegate],
+var AppDelegate = {
 
     _initialized: false,
+
+    canDispatch: function(){
+        return true;
+    },
 
     dispatch: function(name, c) {
 
@@ -167,44 +175,80 @@ var Dispatcher = {
         if (_this._initialized === false){
             _this.menu = $('#menu');
             _this.layout = $('#app');
+
+            _this.delegator = new Delegator([MainDelegate, AuthDelegate]);
+
+            _this.delegator.didResolve = function(delegate){
+                delegate.menu = _this.menu;
+                delegate.layout = _this.layout;
+            };
+
+            _this.delegator.willDispatch = function(delegate){
+                _this.layout.html('');
+            };
+
             _this._initialized = true;
         }
 
-        var resolve = function(name){
-            for (var i in _this.delegates){
-
-                var delegate = _this.delegates[i];
-
-                if (typeof delegate[name] === 'function'){
-                    return delegate;
-                }
-            }
-        };
-
-        var delegate = resolve(name);
-
-        delegate.menu = this.menu;
-        delegate.layout = this.layout;
-
-        if (typeof delegate['dispatch'] === 'function'){
-            if (delegate.dispatch() === false){
-                return ;
-            }
-        }
-
-        if (_this._currnet !== delegate){
-            _this._currnet = delegate;
-
-            if (typeof delegate['init'] === 'function'){
-                delegate.init();
-            }
-        }
-
-        _this.layout.html('');
-
-        delegate[name].apply(delegate, c);
+        _this.delegator.delegate(name, c);
     }
 };
+
+function Delegator (delegates) {
+
+    return {
+        
+        delegate: function(name, c){
+
+            var _this = this;
+
+            var resolve = function(name){
+                for (var i in delegates){
+
+                    var delegate = delegates[i];
+
+                    if (typeof delegate[name] === 'function'){
+                        return delegate;
+                    }
+
+                    if (typeof delegate['canDispatch'] === 'function' 
+                        && delegate.canDispatch(name)){
+                        return delegate;
+                    }
+                }
+            };
+
+            var delegate = resolve(name);
+
+            _this.didResolve(delegate);
+
+            if (typeof delegate['canProceed'] === 'function'){
+                if (delegate.canProceed(name, c) === false){
+                    return ;
+                }
+            }
+
+            if (_this._currnet !== delegate){
+                _this._currnet = delegate;
+
+                if (typeof delegate['didActivate'] === 'function'){
+                    delegate.didActivate();
+                }
+            }
+            
+            _this.willDispatch(delegate);
+
+            if (typeof delegate[name] === 'function'){
+                delegate[name].apply(delegate, c);
+            } else {
+                delegate.dispatch(name, c);
+            }
+        },
+
+        willDispatch: function(){},
+        didResolve: function(){}
+    }
+}
 
 var Session = {
     get: function(){
