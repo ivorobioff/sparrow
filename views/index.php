@@ -24,17 +24,52 @@
 
 
     <script id="nav-authenticated-view" type="text/template">
-        <ul class="nav navbar-nav">
-            <li class="active">
-                <a href="/things">Things</a>
+        <ul class="nav navbar-nav" id="nav-authenticated">
+            <li class="dropdown" id="things-item">
+            <a href="/things" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Things <span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+                <li><a href="/things/good">Good</a></li>
+                <li><a href="/things/bad">Bad</a></li>
+                <li><a href="/things/other">Other</a></li>
+                <li class="divider"></li>
+                <li><a href="/things/all">All</a></li>
+            </ul>
             </li>
-            <li>
+            <li id="categories-item">
                 <a href="/categories">Categories</a>
             </li>
-            <li>
+            <li id="locations-item">
                 <a href="/locations">Locations</a>
             </li>
         </ul>
+    </script>
+
+    <script id="profile-update-view" type="text/template">
+        <div class="row">
+            <h1>Profile</h1>
+            <hr>
+            <div class="col-xs-8 col-xs-offset-2">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active">
+                        <a href="#home" aria-controls="home" role="tab" data-toggle="tab">Profile</a>
+                    </li>
+                    <li role="presentation">
+                        <a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Password</a>
+                    </li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="home">
+
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="profile">
+
+                    </div>
+                </div>
+            </div>
+        </div>
     </script>
 
     <script id="actions-authenticated-view" type="text/template">

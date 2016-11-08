@@ -19,8 +19,16 @@ $(function(){
         delegator.delegate('things');
     });
 
-    page('/things', function(){
+    page('/things/:type(good|bad|other|all)', function(){
         delegator.delegate('things');
+    });
+
+    page('/categories', function(){
+        delegator.delegate('categories');
+    });
+
+    page('/locations', function(){
+        delegator.delegate('locations');
     });
 
     page('*', function(){
@@ -135,6 +143,11 @@ var MainDelegate = {
         this.menu.html('');
         this.menu.append(nav);
         this.menu.append(actions);
+        this.nav = this.menu.find('#nav-authenticated');
+    },
+
+    willDispatch: function(){
+       this.nav.find('li.active').removeClass('active');
     },
 
     canProceed: function(name, c){
@@ -148,11 +161,21 @@ var MainDelegate = {
     },
 
     things: function(){
-        this.layout.html('<h1>Things</h1>');
+        this.nav.find('#things-item').addClass('active');
     },
 
-    profile: function(c){
-        this.layout.html('<h1>Profile</h1>');
+    categories: function(){
+        this.nav.find('#categories-item').addClass('active');
+    },
+
+    locations: function(){
+        this.nav.find('#locations-item').addClass('active');
+    },
+
+    profile: function(){
+        var view = $($('#profile-update-view').html());
+
+        this.layout.html(view);
     },
 
     notFound: function(){
@@ -237,6 +260,10 @@ function Delegator (delegates) {
             }
             
             _this.willDispatch(delegate);
+
+            if (typeof delegate['willDispatch'] === 'function'){
+                    delegate.willDispatch(name, c);
+            }
 
             if (typeof delegate[name] === 'function'){
                 delegate[name].apply(delegate, c);
@@ -335,7 +362,7 @@ function form(el)  {
 function on_link_click(e) {
     var url = $(this).attr('href');
 
-    if (url === '#'){
+    if (url.startsWith('#')){
         return ;
     }
 

@@ -5,8 +5,8 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title><?=$this->escape($title)?></title>
-        <link rel="stylesheet" href="css/bootstrap.min.css">
-        <link rel="stylesheet" href="css/app.css">
+        <link rel="stylesheet" href="/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/css/app.css">
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
         <!--[if lt IE 9]>
@@ -16,10 +16,10 @@
     </head>
     <body>
         <?=$this->section('page');?>
-        <script src="js/jquery-3.1.1.min.js"></script>
-        <script src="js/bootstrap.min.js"></script>
-        <script src="js/page.js"></script>
-        <script src="js/mustache.min.js"></script>
-        <script src="js/app.js"></script>
+        <script src="/js/jquery-3.1.1.min.js"></script>
+        <script src="/js/bootstrap.min.js"></script>
+        <script src="/js/page.js"></script>
+        <script src="/js/mustache.min.js"></script>
+        <script src="/js/app.js"></script>
     </body>
 </html>
