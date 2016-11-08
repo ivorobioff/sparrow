@@ -11,7 +11,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/">PikyPak</a>
+                <a class="navbar-brand" style="color: #d9230f" href="/">PikyPak</a>
             </div>
             <div class="collapse navbar-collapse" id="menu">
 
@@ -26,21 +26,21 @@
     <script id="nav-authenticated-view" type="text/template">
         <ul class="nav navbar-nav" id="nav-authenticated">
             <li class="dropdown" id="things-item">
-            <a href="/things" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Things <span class="caret"></span></a>
-            <ul class="dropdown-menu" role="menu">
-                <li><a href="/things/good">Good</a></li>
-                <li><a href="/things/bad">Bad</a></li>
-                <li><a href="/things/other">Other</a></li>
-                <li class="divider"></li>
-                <li><a href="/things/all">All</a></li>
-            </ul>
+                <a href="/things" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Things <span class="caret"></span></a>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="/things/good">Good</a></li>
+                    <li><a href="/things/bad">Bad</a></li>
+                    <li><a href="/things/other">Other</a></li>
+                    <li class="divider"></li>
+                    <li><a href="/things/all">All</a></li>
+                </ul>
             </li>
-            <li id="categories-item">
-                <a href="/categories">Categories</a>
-            </li>
-            <li id="locations-item">
-                <a href="/locations">Locations</a>
-            </li>
+        </ul>
+        <div class="nav navbar-nav" style="margin-top: 5px; width: 250px;">
+            <input type="text" class="form-control input-sm" placeholder="Search for things ...">
+        </div>
+         <ul class="nav navbar-nav">
+            <li><a href="/help">Help</a></li>
         </ul>
     </script>
 
@@ -119,11 +119,13 @@
     </script>
 
     <script id="actions-authenticated-view" type="text/template">
+    
         <div class="btn-group navbar-btn btn-group-sm navbar-right" id="nav-actions" style="margin-top: 5px;">
-            <a href="/profile" class="btn btn-default">{{ name }}</a>
+            <a id="user-fullname" href="/profile" class="btn btn-default">{{ name }}</a>
             <a href="#" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></a>
             <ul class="dropdown-menu">
                 <li><a href="/profile">Profile</a></li>
+                <li><a href="/preferences">Preferences</a></li>
                 <li class="divider"></li>
                 <li><a href="#" id="sign-out">Sign Out</a></li>
             </ul>

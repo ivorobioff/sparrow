@@ -23,12 +23,12 @@ $(function(){
         delegator.delegate('things');
     });
 
-    page('/categories', function(){
-        delegator.delegate('categories');
+    page('/things/create', function(){
+        delegator.delegate('createThings');
     });
 
-    page('/locations', function(){
-        delegator.delegate('locations');
+    page('/preferences', function(){
+        delegator.delegate('preferences');
     });
 
     page('*', function(){
@@ -123,17 +123,6 @@ var MainDelegate = {
     didActivate: function(){
         var nav = $($('#nav-authenticated-view').html());
 
-        var actions = this._refreshActions();
-
-        this.menu.html('');
-        this.menu.append(nav);
-        this.menu.append(actions);
-        this.nav = this.menu.find('#nav-authenticated');
-    },
-
-    _refreshActions: function(){
-        this.menu.find('#nav-actions').remove();
-
         var s = Session.get();
 
         var actions = $(Mustache.render(
@@ -151,9 +140,15 @@ var MainDelegate = {
             });
         });
 
-        return actions;
+        var create = $('<a href="/things/create" style="margin-right: 10px;" class="btn btn btn-primary btn-sm navbar-btn navbar-right"><span class="fa fa-plus"></span> Create</a>');
+        
+        this.menu.html('');
+        this.menu.append(nav);
+        this.menu.append(actions);
+        this.menu.append(create);
+        this.nav = this.menu.find('#nav-authenticated');
     },
-
+    
     willDispatch: function(){
        this.nav.find('li.active').removeClass('active');
     },
@@ -169,15 +164,15 @@ var MainDelegate = {
     },
 
     things: function(){
-        this.nav.find('#things-item').addClass('active');
+
     },
 
-    categories: function(){
-        this.nav.find('#categories-item').addClass('active');
+    createThings: function(){
+
     },
 
-    locations: function(){
-        this.nav.find('#locations-item').addClass('active');
+    preferences: function(){
+        
     },
 
     profile: function(){
@@ -203,8 +198,7 @@ var MainDelegate = {
                 backend({ method: 'GET', url: '/sessions/' + s.id}).done(function(data){
                     localStorage.setItem('session', JSON.stringify(data));
                     s = Session.get();
-                    var actions = _this._refreshActions();
-                    _this.menu.append(actions);
+                    _this.menu.find('#user-fullname').text(s.user.firstName + ' ' + s.user.lastName);
                 })
             });
 
