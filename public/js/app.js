@@ -63,7 +63,7 @@ var AuthDelegate = {
 
         view.find('form').submit(function(e){
 
-            var f = form($(this));
+            var f = new Form($(this));
 
             f.validate = function(){
                 var pass1 = f.el.find('#password1').val();
@@ -80,7 +80,7 @@ var AuthDelegate = {
                 return true;
             };
 
-            f.submit({url: '/users', session: false}, e).done(function(){
+            f.submit({method: 'POST', url: '/users', session: false}, e).done(function(){
                 page.redirect('/sign-in');
             });
         });
@@ -97,7 +97,7 @@ var AuthDelegate = {
         this.menu.html(signUp);
 
         view.find('form').submit(function(e){
-            var f = form($(this));
+            var f = new Form($(this));
 
             var showErrors = f.showErrors;
 
@@ -108,7 +108,7 @@ var AuthDelegate = {
                 showErrors(errors);
             };
 
-            f.submit({url: '/sessions', session: false}, e).done(function(data){
+            f.submit({method: 'POST', url: '/sessions', session: false}, e).done(function(data){
                 localStorage.setItem('session', JSON.stringify(data));
                 page.redirect('/');
             });
@@ -121,6 +121,19 @@ var AuthDelegate = {
 var MainDelegate = {
 
     didActivate: function(){
+        var nav = $($('#nav-authenticated-view').html());
+
+        var actions = this._refreshActions();
+
+        this.menu.html('');
+        this.menu.append(nav);
+        this.menu.append(actions);
+        this.nav = this.menu.find('#nav-authenticated');
+    },
+
+    _refreshActions: function(){
+        this.menu.find('#nav-actions').remove();
+
         var s = Session.get();
 
         var actions = $(Mustache.render(
@@ -130,7 +143,7 @@ var MainDelegate = {
         actions.find('#sign-out').click(function(e){
             e.preventDefault();
 
-            backend('DELETE', '/sessions/' + s.id).done(function(){
+            backend({ method: 'DELETE', url: '/sessions/' + s.id}).done(function(){
                 Session.destroy();
                 page.redirect('/sign-in');
             }).fail(function(){
@@ -138,12 +151,7 @@ var MainDelegate = {
             });
         });
 
-        var nav = $($('#nav-authenticated-view').html());
-
-        this.menu.html('');
-        this.menu.append(nav);
-        this.menu.append(actions);
-        this.nav = this.menu.find('#nav-authenticated');
+        return actions;
     },
 
     willDispatch: function(){
@@ -175,7 +183,58 @@ var MainDelegate = {
     profile: function(){
         var view = $($('#profile-update-view').html());
 
-        this.layout.html(view);
+        var s = Session.get();
+
+        var _this = this;
+
+        view.find('[name], button').attr('disabled', 'disabled');
+
+        backend({ method: 'GET', url: '/users/' + s.user.id}).always(function(){
+             view.find('[name], button').removeAttr('disabled');
+        }).done(function(data){
+            view.find('#email').val(data.email);
+            view.find('#firstName').val(data.firstName);
+            view.find('#lastName').val(data.lastName);
+        });
+
+        view.find('#update-profile-form').submit(function(e){
+            var form = new Form($(this));
+            form.submit({ method: 'PATCH', url: '/users/' + s.user.id }, e).done(function(data){
+                backend({ method: 'GET', url: '/sessions/' + s.id}).done(function(data){
+                    localStorage.setItem('session', JSON.stringify(data));
+                    s = Session.get();
+                    var actions = _this._refreshActions();
+                    _this.menu.append(actions);
+                })
+            });
+
+        });
+
+        view.find('#change-password-form').submit(function(e){
+            var $this = $(this);
+            var form = new Form($this);
+
+            form.validate = function(){
+                var pass1 = form.el.find('#password1').val();
+                var pass2Input = form.el.find('#password2');
+                var pass2 = pass2Input.val();
+
+                if (pass1 !== pass2){
+                    pass2Input.after('<div class="help-block">This password does not match the password above.</div>');
+                    pass2Input.parents('.form-group').addClass('has-error');
+
+                    return false;
+                }
+
+                return true;
+            };
+
+            form.submit({ method: 'PATCH', url: '/users/' + s.user.id }, e).always(function(){
+                $this.find('#password1, #password2').val('');
+            });
+        });
+        
+        _this.layout.html(view);
     },
 
     notFound: function(){
@@ -297,44 +356,45 @@ var Session = {
     }
 };
 
-function form(el)  {
+function Form(el)  {
     var o = {
         el: el,
+        data: {},
         validate: function(){ return true;},
         
         submit: function (options, e) {
             e.preventDefault();
 
-            if (typeof options === 'string'){
-                options = { url: options };
-            }
+            var _this = this;
 
             el.find('.has-error').removeClass('has-error');
             el.find('.help-block').remove();
 
-            if (this.validate() === false){
+            if (_this.validate() === false){
                 return ;
             }
-        
-            var data = {};
 
+            _this.data = {};
+        
             el.find('[name]').each(function(i, el){
                 el = $(el);
                 var value = el.val();
 
-                if (value){
-                    data[el.attr('name')] = value
+                if (value == ''){
+                   value = null;
                 }
+                 _this.data[el.attr('name')] = value
             });
 
             el.find('select, input, button').attr('disabled', 'disabled');
 
-            return backend({
-                 method: 'POST', 
-                 url: options.url, 
-                 session: options.session, 
-                 data: data
-                }).always(function(){
+            options.data = _this.data;
+
+            if (typeof options.session === 'undefined'){
+                options.session = true;
+            }
+
+            return backend(options).always(function(){
                     el.find('select, input, button').removeAttr('disabled');
                 }).fail(function(x){
                     var data = $.parseJSON(x.responseText);
@@ -370,16 +430,10 @@ function on_link_click(e) {
     return page(url);
 }
 
-function backend(method, endpoint, data){
+function backend(options){
 
-    var options = { session: true };
-
-    if (typeof method === 'string'){
-        options.url = endpoint;
-        options.data = data;
-        options.method = method;
-    } else {
-        options = $.extend(options, method);
+    if (typeof options.session === 'undefined'){
+        options.session = true;
     }
 
     var config = {
@@ -403,7 +457,7 @@ function backend(method, endpoint, data){
             // gives 10 minutes to refresh the session
             
             if (now.getTime() >= (expiresAt.getTime() - 600000)){
-                backend('POST', '/sessions/' + s.id + '/refresh').done(function(data){
+                backend({ method: 'POST', url: '/sessions/' + s.id + '/refresh'}).done(function(data){
                     localStorage.setItem('session', JSON.stringify(data));
                     s = data;
                 }).fail(function(){

@@ -52,20 +52,66 @@
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation" class="active">
-                        <a href="#home" aria-controls="home" role="tab" data-toggle="tab">Profile</a>
+                        <a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Profile</a>
                     </li>
                     <li role="presentation">
-                        <a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Password</a>
+                        <a href="#password" aria-controls="password" role="tab" data-toggle="tab">Password</a>
                     </li>
                 </ul>
 
                 <!-- Tab panes -->
                 <div class="tab-content">
-                    <div role="tabpanel" class="tab-pane active" id="home">
-
+                    <div role="tabpanel" class="tab-pane active" style="padding: 10px;" id="profile">
+                        <div class="well bs-component">
+                            <form class="form-horizontal" id="update-profile-form">
+                                <div class="form-group">
+                                    <label for="email" class="col-lg-3 control-label">Email<span class="obligate">*</span></label>
+                                    <div class="col-lg-9">
+                                        <input type="email" name="email" class="form-control" id="email">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="firstName" class="col-lg-3 control-label">First name<span class="obligate">*</span></label>
+                                    <div class="col-lg-9">
+                                        <input type="text" name="firstName" class="form-control" id="firstName">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="firstName" class="col-lg-3 control-label">Last name<span class="obligate">*</span></label>
+                                    <div class="col-lg-9">
+                                        <input type="text" name="lastName" class="form-control" id="lastName">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-lg-9 pull-right">
+                                        <button type="submit" class="btn btn-primary">Update</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                    <div role="tabpanel" class="tab-pane" id="profile">
-
+                    <div role="tabpanel" class="tab-pane" style="padding: 10px;" id="password">
+                        <div class="well bs-component">
+                            <form class="form-horizontal" id="change-password-form">
+                                <div class="form-group">
+                                    <label for="password1" class="col-lg-3 control-label">Password<span class="obligate">*</span></label>
+                                    <div class="col-lg-9">
+                                        <input type="password" name="password" class="form-control" id="password1">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="password2" class="col-lg-3 control-label no-left-padding">Re-enter password<span class="obligate">*</span></label>
+                                    <div class="col-lg-9">
+                                        <input type="password" class="form-control" id="password2">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-lg-9 pull-right">
+                                        <button type="submit" class="btn btn-primary">Change</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -73,7 +119,7 @@
     </script>
 
     <script id="actions-authenticated-view" type="text/template">
-        <div class="btn-group navbar-btn btn-group-sm navbar-right" style="margin-top: 5px;">
+        <div class="btn-group navbar-btn btn-group-sm navbar-right" id="nav-actions" style="margin-top: 5px;">
             <a href="/profile" class="btn btn-default">{{ name }}</a>
             <a href="#" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></a>
             <ul class="dropdown-menu">
