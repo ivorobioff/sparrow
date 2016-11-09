@@ -23,12 +23,12 @@ $(function(){
         delegator.delegate('things');
     });
 
-    page('/things/create', function(){
-        delegator.delegate('createThings');
-    });
-
     page('/preferences', function(){
         delegator.delegate('preferences');
+    });
+
+    page('/help', function(){
+        delegator.delegate('help');
     });
 
     page('*', function(){
@@ -140,7 +140,13 @@ var MainDelegate = {
             });
         });
 
-        var create = $('<a href="/things/create" style="margin-right: 10px;" class="btn btn btn-primary btn-sm navbar-btn navbar-right"><span class="fa fa-plus"></span> Create</a>');
+        var create = $('<a href="#" style="margin-right: 10px;" class="btn btn btn-primary btn-sm navbar-btn navbar-right"><span class="fa fa-plus"></span> Create</a>');
+        
+        create.click(function(e){
+            var modal = $($('#create-thing-modal-view').html());
+            modal.modal('show');
+            e.preventDefault();
+        });
         
         this.menu.html('');
         this.menu.append(nav);
@@ -167,12 +173,53 @@ var MainDelegate = {
 
     },
 
-    createThings: function(){
-
-    },
-
     preferences: function(){
-        
+        var view = $($('#preferences-view').html());
+        var _this = this;
+
+        var reload_locations = function(){
+            var template = $('#location-item-view').html();
+            var holder = view.find('#locations-holder');
+
+            backend({ method: 'GET', url: '/locations?orderBy=id:DESC' }).done(function(data){
+                holder.html('');
+                $.each(data.data, function(i, source){
+                    var location = $(Mustache.render(template, source));
+
+                    location.find('#delete-action').click(function(e){
+                        e.preventDefault();
+                        
+                        if (confirm('Do you want to delete the "' + source.name + '" location?')){
+                            backend({ method: 'DELETE', url: '/locations/' + source.id }).done(function(){
+                                reload_locations();
+                            });
+                        }
+                    });
+
+                    holder.append(location);
+                });
+                
+            });
+        }
+
+        reload_locations();
+
+        view.find('#create-location-action').click(function(e){
+            e.preventDefault();
+            
+            var modal = new Modal($($('#create-location-modal-view').html()));
+            
+            modal.onSubmit = function(e){
+                modal.submit({ method: 'POST', url: '/locations' }, e).done(function(){
+                    reload_locations();
+                });
+            }
+
+            modal.show();
+        });
+
+
+        _this.layout.html(view);
     },
 
     profile: function(){
@@ -229,6 +276,10 @@ var MainDelegate = {
         });
         
         _this.layout.html(view);
+    },
+
+    help: function(){
+
     },
 
     notFound: function(){
@@ -350,6 +401,69 @@ var Session = {
     }
 };
 
+function Modal(el) {
+
+    var obj = {
+        el: el,
+        buttons: {
+            cancel: el.find('#cancel-model-action'),
+            submit: el.find('#submit-model-action')
+        },
+        show: function(){
+            el.modal('show');
+        },
+
+        hide: function(){
+            el.modal('hide');
+        },
+
+        submit: function(options, e){
+            var _this = this;
+
+            _this.buttons.cancel.attr('disabled', 'disabled');
+            _this.buttons.submit.attr('disabled', 'disabled');
+            
+            return _this.form.submit(options, e).always(function(){
+                _this.buttons.cancel.removeAttr('disabled');
+                _this.buttons.submit.removeAttr('disabled');
+            }).done(function(){
+                _this.hide();
+            });
+        },
+
+        onCancel: function() {},
+        onSubmit: function(){},
+        onHide: function() {},
+        onShow: function() {},
+    };
+
+    var form = el.find('form');
+
+    if (form.length > 0){
+        obj.form = new Form(form);
+    }
+
+    el.on('hidden.bs.modal', function(e){
+        el.remove();
+        obj.onHide(e);
+    });
+
+    el.on('show.bs.modal', function(e){
+        obj.onShow(e);
+    });
+    
+
+    obj.buttons.cancel.click(function(e){
+        obj.onCancel(e);
+    });
+
+     obj.buttons.submit.click(function(e){
+        obj.onSubmit(e);
+    });
+
+    return obj;
+}
+
 function Form(el)  {
     var o = {
         el: el,
@@ -380,7 +494,7 @@ function Form(el)  {
                  _this.data[el.attr('name')] = value
             });
 
-            el.find('select, input, button').attr('disabled', 'disabled');
+            el.find('select, input, button, textarea').attr('disabled', 'disabled');
 
             options.data = _this.data;
 
@@ -389,7 +503,7 @@ function Form(el)  {
             }
 
             return backend(options).always(function(){
-                    el.find('select, input, button').removeAttr('disabled');
+                    el.find('select, input, button, textarea').removeAttr('disabled');
                 }).fail(function(x){
                     var data = $.parseJSON(x.responseText);
                     if (x.status == 422){

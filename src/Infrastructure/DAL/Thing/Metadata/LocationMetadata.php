@@ -31,6 +31,7 @@ class LocationMetadata extends AbstractMetadataProvider
 
         $builder
             ->createField('description', 'text')
+            ->nullable(true)
             ->build();
 
         $builder

@@ -7,6 +7,8 @@ use ImmediateSolutions\Api\Thing\Serializers\LocationSerializer;
 use ImmediateSolutions\Core\Thing\Options\FetchLocationsOptions;
 use ImmediateSolutions\Core\Thing\Services\LocationService;
 use ImmediateSolutions\Core\User\Services\UserService;
+use ImmediateSolutions\Support\Api\DefaultPaginatorAdapter;
+use ImmediateSolutions\Support\Core\Options\PaginationOptions;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -40,13 +42,30 @@ class LocationsController extends Controller
      */
     public function index(LocationsSearchableProcessor $processor)
     {
-        $options = new FetchLocationsOptions();
-        $options->setCriteria($processor->getCriteria());
+        $adapter = new DefaultPaginatorAdapter([
+            'getAll' => function($page, $perPage) use ($processor){
 
-        $locations = $this->locationService
-            ->getAll($this->session->getUser()->getId(), $options);
+                $options = new FetchLocationsOptions();
 
-        return $this->reply->collection($locations, $this->serializer(LocationSerializer::class));
+                $options->setPagination(new PaginationOptions($page, $perPage));
+                $options->setCriteria($processor->getCriteria());
+                $options->setSortables($processor->createSortables());
+
+                return $this->locationService
+                    ->getAll($this->session->getUser()->getId(), $options);
+            },
+            'getTotal' => function() use ($processor){
+                return $this->locationService->getTotal(
+                    $this->session->getUser()->getId(),
+                    $processor->getCriteria()
+                );
+            }
+        ]);
+
+        return $this->reply->collection(
+            $this->paginator($adapter),
+            $this->serializer(LocationSerializer::class)
+        );
     }
 
     /**

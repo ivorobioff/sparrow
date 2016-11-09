@@ -9,3 +9,12 @@ body {
 .obligate {
     color: #d9230f;
 }
+
+a.cat-action {
+    color: #cccccc;
+    text-decoration: none;
+}
+
+a.cat-action:hover{
+    color: #777777;
+}

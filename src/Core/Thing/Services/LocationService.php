@@ -2,11 +2,13 @@
 namespace ImmediateSolutions\Core\Thing\Services;
 use ImmediateSolutions\Core\Support\Service;
 use ImmediateSolutions\Core\Thing\Criteria\LocationFilterResolver;
+use ImmediateSolutions\Core\Thing\Criteria\LocationSorterResolver;
 use ImmediateSolutions\Core\Thing\Entities\Location;
 use ImmediateSolutions\Core\Thing\Options\FetchLocationsOptions;
 use ImmediateSolutions\Core\Thing\Payloads\LocationPayload;
 use ImmediateSolutions\Core\Thing\Validation\LocationValidator;
 use ImmediateSolutions\Core\User\Entities\User;
+use ImmediateSolutions\Support\Core\Criteria\Criteria;
 use ImmediateSolutions\Support\Core\Criteria\Filter;
 
 /**
@@ -104,8 +106,29 @@ class LocationService extends Service
             ->andWhere($builder->expr()->eq('l.user', ':user'))
             ->setParameter('user', $userId);
 
-        (new Filter())->apply($builder, $options->getCriteria(), new LocationFilterResolver());
+        (new Filter())->apply($builder, $options->getCriteria(), new LocationFilterResolver())
+            ->withSorter($builder, $options->getSortables(), new LocationSorterResolver());
 
         return $builder->getQuery()->getResult();
+    }
+
+    /**
+     * @param int $userId
+     * @param Criteria[] $criteria
+     * @return int
+     */
+    public function getTotal($userId, array $criteria)
+    {
+        $builder = $this->entityManager->createQueryBuilder();
+
+        $builder
+            ->from(Location::class, 'l')
+            ->select($builder->expr()->countDistinct('l'))
+            ->andWhere($builder->expr()->eq('l.user', ':user'))
+            ->setParameter('user', $userId);
+
+        (new Filter())->apply($builder, $criteria, new LocationFilterResolver());
+
+        return (int) $builder->getQuery()->getSingleScalarResult();
     }
 }

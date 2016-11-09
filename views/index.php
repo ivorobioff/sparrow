@@ -22,6 +22,207 @@
 
     </div>
 
+    <script id="create-location-modal-view" type="text/template">
+        <div class="modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Create "Location"</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="well bs-component">
+                        <form class="form-horizontal">
+                            <div class="form-group">
+                                <label for="name" class="col-lg-3 control-label">Name<span class="obligate">*</span></label>
+                                <div class="col-lg-9">
+                                    <input type="text" name="name" class="form-control" id="name">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="description" class="col-lg-3 control-label">Description</label>
+                                <div class="col-lg-9">
+                                    <textarea class="form-control" name="description" rows="3" id="description"></textarea>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="cancel-model-action" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button id="submit-model-action" type="button" class="btn btn-primary">Create</button>
+                </div>
+                </div>
+            </div>
+        </div>
+    </script>
+
+    <script id="location-item-view" type="text/template">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <div class="pull-left"><span class="fa fa-map-marker"></span> {{ name }}</div>
+                <div class="pull-right">
+                        <a href="#" id="delete-action" class="fa fa-times pull-right cat-action" style="font-size: 16px;"></a>
+                    <a href="#" id="edit-action" class="fa fa-pencil pull-right cat-action" style="font-size: 16px; margin-right: 3px;"></a>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="panel-body">
+                {{ description }}
+            </div>
+        </div>
+    </script>
+    
+    <script id="preferences-view" type="text/template">
+        <div class="row">
+            <h1>Preferences</h1>
+            <hr>
+            <div class="col-xs-8 col-xs-offset-2">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active">
+                        <a href="#categories" aria-controls="categories" role="tab" data-toggle="tab">Categories</a>
+                    </li>
+                    <li role="presentation">
+                        <a href="#locations" aria-controls="locations" role="tab" data-toggle="tab">Locations</a>
+                    </li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="categories">
+                    <br>
+                        <div class="row">
+                            <div class="col-xs-10">
+                                <ul class="breadcrumb">
+                                    <li><a href="#">Home</a></li>
+                                    <li><a href="#">Food and Shit</a></li>
+                                    <li class="active">Pizza Party</li>
+                                </ul>
+                            </div>
+                            <div class="col-xs-2">
+                                <a href="#" id="create-category-action" class="btn btn-default pull-right"><span class="fa fa-plus"></span> Create</a>
+                            </div>
+                        </div>
+                        <div class="well">
+                            <ul class="list-group">
+                                <li class="list-group-item">
+                                    <a href="#" class="fa fa-times pull-right cat-action" style="font-size: 16px;"></a>
+                                    <a href="#" class="fa fa-pencil pull-right cat-action" style="font-size: 16px; margin-right: 3px;"></a>
+                                    <a href="#">Food & Drinks</a>
+                                </li>
+                                <li class="list-group-item">
+                                    <a href="#" class="fa fa-times pull-right cat-action" style="font-size: 16px;"></a>
+                                    <a href="#" class="fa fa-pencil pull-right cat-action" style="font-size: 16px; margin-right: 3px;"></a>
+                                    <a href="#">Shit for home</a>
+                                </li>
+                                <li class="list-group-item">
+                                    <a href="#" class="fa fa-times pull-right cat-action" style="font-size: 16px;"></a>
+                                    <a href="#" class="fa fa-pencil pull-right cat-action" style="font-size: 16px; margin-right: 3px;"></a>
+                                    <a href="#">Auto-shit</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane"  id="locations">
+                        <br>
+                        
+                        <div class="row">
+                            <div class="col-xs-10">
+                                <p style="padding-top: 8px;">Location is used to identify a point or an area on the Earth's surface or elsewhere.</p>
+                            </div>
+                            <div class="col-xs-2">
+                                <a href="#" id="create-location-action" class="btn btn-default pull-right"><span class="fa fa-plus"></span> Create</a>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="input-group">
+                            <span class="input-group-addon"><span class="fa fa-search"></span></span>
+                            <input class="form-control" id="inputdefault" type="text" placeholder="Search for locations ...">
+                        </div>
+                        <br>
+                        <div class="well" id="locations-holder"></div>
+                        <ul class="pager">
+                            <li class="previous disabled"><a href="#">&larr; Newer</a></li>
+                            <li class="next"><a href="#">Older &rarr;</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+    
+    <script id="create-thing-modal-view" type="text/template">
+        <div class="modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Create "Thing"</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="well bs-component">
+                        <form class="form-horizontal">
+                            <div class="form-group">
+                                <label for="name" class="col-lg-3 control-label">Name<span class="obligate">*</span></label>
+                                <div class="col-lg-9">
+                                    <input type="text" name="name" class="form-control" id="name">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="description" class="col-lg-3 control-label">Description</label>
+                                <div class="col-lg-9">
+                                    <textarea class="form-control" rows="3" id="description"></textarea>
+                                </div>
+                            </div> 
+                            <div class="form-group">
+                                <label class="col-lg-3 control-label">Attitude<span class="obligate">*</span></label>
+                                <div class="col-lg-9">
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="attitude" id="attitude1" value="positive" checked>
+                                            Good
+                                        </label>
+                                    </div>
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="attitude" id="attitude2" value="negative">
+                                            Bad
+                                        </label>
+                                    </div>
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="attitude" id="attitude3" value="neutral">
+                                            Other
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="rate" class="col-lg-3 control-label">Rate</label>
+                                <div class="col-lg-9">
+                                    <select class="form-control" id="rate" name="rate">
+                                        <option value="">None</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary">Create</button>
+                </div>
+                </div>
+            </div>
+        </div>
+    </script>
 
     <script id="nav-authenticated-view" type="text/template">
         <ul class="nav navbar-nav" id="nav-authenticated">
