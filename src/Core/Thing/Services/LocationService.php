@@ -10,6 +10,7 @@ use ImmediateSolutions\Core\Thing\Validation\LocationValidator;
 use ImmediateSolutions\Core\User\Entities\User;
 use ImmediateSolutions\Support\Core\Criteria\Criteria;
 use ImmediateSolutions\Support\Core\Criteria\Filter;
+use ImmediateSolutions\Support\Core\Criteria\Paginator;
 
 /**
  * @author Igor Vorobiov<igor.vorobioff@gmail.com>
@@ -109,7 +110,7 @@ class LocationService extends Service
         (new Filter())->apply($builder, $options->getCriteria(), new LocationFilterResolver())
             ->withSorter($builder, $options->getSortables(), new LocationSorterResolver());
 
-        return $builder->getQuery()->getResult();
+        return (new Paginator())->apply($builder, $options->getPagination());
     }
 
     /**

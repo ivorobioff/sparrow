@@ -7,6 +7,7 @@
         <title><?=$this->escape($title)?></title>
         <link rel="stylesheet" href="/css/bootstrap.min.css">
         <link rel="stylesheet" href="/css/font-awesome.min.css">
+        <link rel="stylesheet" href="/css/lobibox.min.css">
         <link rel="stylesheet" href="/css/app.css">
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -21,6 +22,7 @@
         <script src="/js/bootstrap.min.js"></script>
         <script src="/js/page.js"></script>
         <script src="/js/mustache.min.js"></script>
+        <script src="/js/lobibox.min.js"></script>
         <script src="/js/app.js"></script>
     </body>
 </html>

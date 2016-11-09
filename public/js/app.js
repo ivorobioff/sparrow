@@ -177,23 +177,89 @@ var MainDelegate = {
         var view = $($('#preferences-view').html());
         var _this = this;
 
-        var reload_locations = function(){
+        var reload_locations = function(params){
+
+            params = $.extend({ orderBy: 'id:DESC' }, params);
+
             var template = $('#location-item-view').html();
             var holder = view.find('#locations-holder');
 
-            backend({ method: 'GET', url: '/locations?orderBy=id:DESC' }).done(function(data){
-                holder.html('');
+            var query = '';
+
+            if (typeof params.search !== 'undefined'){
+                query = params.search.name;
+            }
+
+            view.find('#search-location-form input').val(query);
+
+            return backend({ method: 'GET', url: '/locations', data: params }).done(function(data){
+                if (data.data.length == 0){
+                    holder.removeClass('well');
+                    holder.html('<p style="text-align: center">No Result</p>');
+                } else {
+                    holder.addClass('well');
+                    holder.html('');
+                }
+
+                var older = view.find('#older-locations');
+                var newer = view.find('#newer-locations');
+
+                var pagination = data.meta.pagination;
+                
+                if (pagination.totalPages > 1 && pagination.totalPages !== pagination.current){
+                    older.removeClass('disabled');
+                    older.click(function(e){
+                        e.preventDefault();
+                        params.page = pagination.current + 1;
+                        reload_locations(params);
+                    });
+                } else {
+                    older.addClass('disabled', 'disabled');
+                }
+
+                if (pagination.current > 1){
+                    newer.removeClass('disabled');
+                    newer.click(function(e){
+                        e.preventDefault();
+                        params.page = pagination.current - 1;
+                        reload_locations(params);
+                    });
+                } else {
+                    newer.addClass('disabled', 'disabled');
+                }
+
                 $.each(data.data, function(i, source){
                     var location = $(Mustache.render(template, source));
 
                     location.find('#delete-action').click(function(e){
                         e.preventDefault();
-                        
+
                         if (confirm('Do you want to delete the "' + source.name + '" location?')){
                             backend({ method: 'DELETE', url: '/locations/' + source.id }).done(function(){
                                 reload_locations();
+                                Show.success('The "' + source.name + '" location has been deleted.');
                             });
                         }
+                    });
+
+                    location.find('#edit-action').click(function(e){
+                        e.preventDefault();
+                         var modal = new Modal($($('#edit-location-modal-view').html()));
+
+                         modal.onShow = function(e){
+                             modal.form.el.find('[name="name"]').val(source.name);
+                             modal.form.el.find('[name="description"]').val(source.description);
+                         };
+
+                         modal.form.el.submit(function(e){
+                             modal.form.submit({ method: 'PATCH', url: '/locations/' + source.id }, e).done(function(){
+                                reload_locations();
+                                modal.hide();
+                                Show.success('The "' + source.name + '" location has been updated.');
+                            });
+                         });
+
+                         modal.show();
                     });
 
                     holder.append(location);
@@ -209,15 +275,29 @@ var MainDelegate = {
             
             var modal = new Modal($($('#create-location-modal-view').html()));
             
-            modal.onSubmit = function(e){
-                modal.submit({ method: 'POST', url: '/locations' }, e).done(function(){
+            modal.form.el.submit(function(e){
+                 modal.form.submit({ method: 'POST', url: '/locations' }, e).done(function(data){
                     reload_locations();
+                    modal.hide();
+                    Show.success('The "' + data.name + '" location has been created.');
                 });
-            }
+            });
 
             modal.show();
         });
 
+        view.find('#search-location-form').submit(function(e){
+            e.preventDefault();
+            var query = $(this).find('input').val();
+
+            if (query == ''){
+                reload_locations();
+            } else if (query.length >= 3){
+                reload_locations({ search: { name: query } });
+            } else {
+                Show.warning('The search term must be at least 3 characters long.');
+            }
+        });
 
         _this.layout.html(view);
     },
@@ -229,19 +309,14 @@ var MainDelegate = {
 
         var _this = this;
 
-        view.find('[name], button').attr('disabled', 'disabled');
-
-        backend({ method: 'GET', url: '/users/' + s.user.id}).always(function(){
-             view.find('[name], button').removeAttr('disabled');
-        }).done(function(data){
-            view.find('#email').val(data.email);
-            view.find('#firstName').val(data.firstName);
-            view.find('#lastName').val(data.lastName);
-        });
+        view.find('#email').val(s.user.email);
+        view.find('#firstName').val(s.user.firstName);
+        view.find('#lastName').val(s.user.lastName);
 
         view.find('#update-profile-form').submit(function(e){
             var form = new Form($(this));
             form.submit({ method: 'PATCH', url: '/users/' + s.user.id }, e).done(function(data){
+                Show.success('You profile has been updated.');
                 backend({ method: 'GET', url: '/sessions/' + s.id}).done(function(data){
                     localStorage.setItem('session', JSON.stringify(data));
                     s = Session.get();
@@ -272,6 +347,8 @@ var MainDelegate = {
 
             form.submit({ method: 'PATCH', url: '/users/' + s.user.id }, e).always(function(){
                 $this.find('#password1, #password2').val('');
+            }).done(function(){
+                Show.success('The password has been changed.');
             });
         });
         
@@ -417,22 +494,12 @@ function Modal(el) {
             el.modal('hide');
         },
 
-        submit: function(options, e){
-            var _this = this;
-
-            _this.buttons.cancel.attr('disabled', 'disabled');
-            _this.buttons.submit.attr('disabled', 'disabled');
-            
-            return _this.form.submit(options, e).always(function(){
-                _this.buttons.cancel.removeAttr('disabled');
-                _this.buttons.submit.removeAttr('disabled');
-            }).done(function(){
-                _this.hide();
-            });
-        },
-
         onCancel: function() {},
-        onSubmit: function(){},
+        onSubmit: function(){
+            if (typeof obj.form !== 'undefined'){
+                obj.form.el.submit();
+            }
+        },
         onHide: function() {},
         onShow: function() {},
     };
@@ -469,7 +536,7 @@ function Form(el)  {
         el: el,
         data: {},
         validate: function(){ return true;},
-        
+    
         submit: function (options, e) {
             e.preventDefault();
 
@@ -508,10 +575,9 @@ function Form(el)  {
                     var data = $.parseJSON(x.responseText);
                     if (x.status == 422){
                         o.showErrors(data.errors);
-                    } else {
-                        el.prepend('<div class="alert alert-danger">' + data.message + '</div>')
+                    } else if(x.status < 500) {
+                        Show.error(data.message);
                     }
-
                 });
         },
 
@@ -551,7 +617,11 @@ function backend(options){
     };
 
     if (typeof options.data !== 'undefined'){
-        config.data = JSON.stringify(options.data);
+        if (options.method === 'GET' || options.method === 'DELETE'){
+            config.url += '?' + decodeURIComponent($.param(options.data));
+        } else {
+            config.data = JSON.stringify(options.data);
+        }
     }
 
     if (options.session == true){
@@ -580,5 +650,39 @@ function backend(options){
         }
     }
 
-    return $.ajax(config);
+    return $.ajax(config).fail(function(x){
+        if (x.status >= 500){
+             Show.error('You got an internal server error. Please contact our support center.');   
+        }
+    });
+}
+
+
+var Show = {
+    success: function(message){
+        Lobibox.notify('success', {
+            msg: message,
+            sound: false,
+            delay: 3000,
+            delayIndicator: false
+        });
+    },
+
+    warning: function(message){
+        Lobibox.notify('warning', {
+            msg: message,
+            sound: false,
+            delay: 3000,
+            delayIndicator: false
+        })
+    },
+
+    error: function(message){
+        Lobibox.notify('error', {
+            msg: message,
+            sound: false,
+            delay: 4000,
+            delayIndicator: false
+        })
+    }
 }

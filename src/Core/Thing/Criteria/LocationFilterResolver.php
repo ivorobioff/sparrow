@@ -17,5 +17,4 @@ class LocationFilterResolver extends AbstractResolver
         $builder->andWhere($builder->expr()->like('l.name', ':name'))
             ->setParameter('name', '%' . addcslashes($name, '%_') . '%');
     }
-
 }
