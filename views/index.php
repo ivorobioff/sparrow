@@ -22,6 +22,35 @@
 
     </div>
 
+    <script id="create-category-modal-view" type="text/template">
+        <div class="modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Create "Category"</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="well bs-component">
+                        <form class="form-horizontal">
+                            <div class="form-group">
+                                <label for="title" class="col-lg-3 control-label">Name<span class="obligate">*</span></label>
+                                <div class="col-lg-9">
+                                    <input type="text" name="title" class="form-control" id="title">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="cancel-model-action" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button id="submit-model-action" type="button" class="btn btn-primary">Create</button>
+                </div>
+                </div>
+            </div>
+        </div>
+    </script>
+
     <script id="edit-location-modal-view" type="text/template">
         <div class="modal">
             <div class="modal-dialog">
@@ -92,6 +121,14 @@
         </div>
     </script>
 
+    <script id="category-item-view" type="text/template">
+         <li class="list-group-item">
+            <a href="#" id="delete-action" class="fa fa-times pull-right cat-action" style="font-size: 16px;"></a>
+            <a href="#" id="edit-action" class="fa fa-pencil pull-right cat-action" style="font-size: 16px; margin-right: 3px;"></a>
+            <a href="#" id="open-category-action">{{ title }}</a>
+        </li>
+    </script>
+
     <script id="location-item-view" type="text/template">
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -129,35 +166,15 @@
                     <br>
                         <div class="row">
                             <div class="col-xs-10">
-                                <ul class="breadcrumb">
-                                    <li><a href="#">Home</a></li>
-                                    <li><a href="#">Food and Shit</a></li>
-                                    <li class="active">Pizza Party</li>
+                                <ul class="breadcrumb" id="tree-holder">
+                                    <li>Home</li>
                                 </ul>
                             </div>
                             <div class="col-xs-2">
                                 <a href="#" id="create-category-action" class="btn btn-default pull-right"><span class="fa fa-plus"></span> Create</a>
                             </div>
                         </div>
-                        <div class="well">
-                            <ul class="list-group">
-                                <li class="list-group-item">
-                                    <a href="#" class="fa fa-times pull-right cat-action" style="font-size: 16px;"></a>
-                                    <a href="#" class="fa fa-pencil pull-right cat-action" style="font-size: 16px; margin-right: 3px;"></a>
-                                    <a href="#">Food & Drinks</a>
-                                </li>
-                                <li class="list-group-item">
-                                    <a href="#" class="fa fa-times pull-right cat-action" style="font-size: 16px;"></a>
-                                    <a href="#" class="fa fa-pencil pull-right cat-action" style="font-size: 16px; margin-right: 3px;"></a>
-                                    <a href="#">Shit for home</a>
-                                </li>
-                                <li class="list-group-item">
-                                    <a href="#" class="fa fa-times pull-right cat-action" style="font-size: 16px;"></a>
-                                    <a href="#" class="fa fa-pencil pull-right cat-action" style="font-size: 16px; margin-right: 3px;"></a>
-                                    <a href="#">Auto-shit</a>
-                                </li>
-                            </ul>
-                        </div>
+                        <div id="categories-holder"></div>
                     </div>
                     <div role="tabpanel" class="tab-pane"  id="locations">
                         <br>
@@ -178,7 +195,7 @@
                         </div>
                         </form>
                         <br>
-                        <div class="well" id="locations-holder"></div>
+                        <div id="locations-holder"></div>
                         <ul class="pager">
                             <li id="newer-locations" class="previous disabled"><a href="#">&larr; Newer</a></li>
                             <li id="older-locations" class="next disabled"><a href="#">Older &rarr;</a></li>

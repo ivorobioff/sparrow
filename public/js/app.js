@@ -177,7 +177,133 @@ var MainDelegate = {
         var view = $($('#preferences-view').html());
         var _this = this;
 
-        var reload_locations = function(params){
+        // CATEGORIES
+
+        var current_category = null;
+        var categories = [];
+
+        var template = $('#category-item-view').html();
+        var holder = view.find('#categories-holder'); 
+        var tree = view.find('#tree-holder');
+
+        var render_tree = function(category){
+            tree.html('');
+
+            if (category === null){
+                tree.append('<li>Home</li>');
+                return ;
+            }
+            
+            var home = $('<li><a href="#">Home</a></li>');
+            tree.append(home);
+
+            home.find('a').click(function(e){
+                e.preventDefault();
+                render_categories(categories, null);
+            });
+
+            var append_parents = function(item){
+                if (item === null){
+                    return ;
+                }
+                var parent = $(Mustache.render('<li><a href="#">{{ title }}</a></li>', { title: item.title }));
+
+                parent.find('a').click(function(e){
+                    e.preventDefault();
+                    render_categories(item.children, item);
+                });
+                append_parents(item.parent);
+                tree.append(parent);
+            }
+
+            append_parents(category.parent);
+
+            tree.append(Mustache.render('<li>{{ title }}</li>', { title: category.title }));
+        };
+
+        var render_categories = function(children, parent){
+            if (children.length > 0){
+                holder.addClass('well');
+                holder.html('');
+            } else {
+                holder.removeClass('well');
+                holder.html('<p style="text-align: center">No Result</p>');
+            }
+
+            render_tree(parent);
+
+            $.each(children, function(i, child){
+                child.parent = parent;
+
+                var category = $(Mustache.render($('#category-item-view').html(), child));
+
+                category.find('#open-category-action').click(function(e){
+                    e.preventDefault();
+                    render_categories(child.children, child);
+                    render_tree(child);
+                    current_category = child;
+                });
+
+                category.find('#delete-action').click(function(e){
+                    e.preventDefault();
+
+                    if (confirm('Do you want to delete the "' + child.title + '" category?')){
+                        backend({ method: 'DELETE', url: '/categories/' + child.id }).done(function(){
+                            Show.success('The "' + child.title + '" category has been deleted.');
+                            refresh_current_category();
+                        });
+                    }
+                });
+
+                holder.append(category);
+            });
+        };
+
+        backend({ method: 'GET', url: '/categories' }).done(function(data){
+            categories = data.data;
+            render_categories(categories, null);
+        });
+        
+        var refresh_current_category = function(){
+            if (current_category === null){
+                backend({ method: 'GET', url: '/categories' }).done(function(data){
+                    categories = data.data;
+                    render_categories(categories, null);
+                });
+            } else {
+                backend({ method: 'GET', url: '/categories/' + current_category.id }).done(function(data){
+                    current_category.children = data.children;     
+                    render_categories(current_category.children, current_category);
+                });
+            }
+        }
+
+        view.find('#create-category-action').click(function(e){
+            e.preventDefault();
+            
+            var modal = new Modal($($('#create-category-modal-view').html()));
+
+            modal.form.onDataReady = function(data){
+                if (current_category !== null){
+                    data.parent = current_category.id;
+                }
+            }
+
+            modal.form.el.submit(function(e){
+
+                modal.form.submit({ method: 'POST', url: '/categories' }, e).done(function(data){
+                    modal.hide();
+                    Show.success('The "' + data.title + '" category has been created.');
+                    refresh_current_category();
+                });
+            });
+
+            modal.show();
+        });
+
+        // LOCATIONS
+
+         var reload_locations = function(params){
 
             params = $.extend({ orderBy: 'id:DESC' }, params);
 
@@ -191,14 +317,14 @@ var MainDelegate = {
             }
 
             view.find('#search-location-form input').val(query);
-
+            
             return backend({ method: 'GET', url: '/locations', data: params }).done(function(data){
-                if (data.data.length == 0){
-                    holder.removeClass('well');
-                    holder.html('<p style="text-align: center">No Result</p>');
-                } else {
+                if (data.data.length > 0){
                     holder.addClass('well');
                     holder.html('');
+                } else {
+                    holder.removeClass('well');
+                    holder.html('<p style="text-align: center">No Result</p>');
                 }
 
                 var older = view.find('#older-locations');
@@ -508,6 +634,15 @@ function Modal(el) {
 
     if (form.length > 0){
         obj.form = new Form(form);
+        obj.form.onDisable = function(){
+            obj.buttons.submit.attr('disabled', 'disabled');
+            obj.buttons.cancel.attr('disabled', 'disabled');
+        };
+
+        obj.form.onEnable = function(){
+            obj.buttons.submit.removeAttr('disabled');
+            obj.buttons.cancel.removeAttr('disabled');
+        };
     }
 
     el.on('hidden.bs.modal', function(e){
@@ -561,7 +696,10 @@ function Form(el)  {
                  _this.data[el.attr('name')] = value
             });
 
+            _this.onDataReady(_this.data);
+
             el.find('select, input, button, textarea').attr('disabled', 'disabled');
+            _this.onDisable();
 
             options.data = _this.data;
 
@@ -571,6 +709,7 @@ function Form(el)  {
 
             return backend(options).always(function(){
                     el.find('select, input, button, textarea').removeAttr('disabled');
+                    _this.onEnable();
                 }).fail(function(x){
                     var data = $.parseJSON(x.responseText);
                     if (x.status == 422){
@@ -580,6 +719,11 @@ function Form(el)  {
                     }
                 });
         },
+
+        onDisable: function() {},
+        onEnable: function() {},
+
+        onDataReady: function(){},
 
         showErrors: function(errors){
             $.each(errors, function(name, meta){

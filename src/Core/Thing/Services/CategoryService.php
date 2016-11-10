@@ -74,6 +74,11 @@ class CategoryService extends Service
     {
         $this->transfer($payload, $category, 'title');
         $this->transfer($payload, $category, 'parent', function($id){
+
+            if ($id === null){
+                return $id;
+            }
+
             /**
              * @var Category $parent
              */

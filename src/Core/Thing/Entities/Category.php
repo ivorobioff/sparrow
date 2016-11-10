@@ -36,12 +36,25 @@ class Category
     public function getParent() { return $this->parent; }
 
     /**
-     * @param Category $category
+     * @param Category $parent
      */
-    public function setParent(Category $category)
+    public function setParent(Category $parent = null)
     {
-        $this->parent = $category;
-        $category->addChildren($this);
+        if ($parent === null && $this->parent){
+            $this->parent->removeChild($this);
+        }
+
+        if ($parent !== null){
+
+            if ($this->parent === null){
+                $parent->addChild($this);
+            } elseif ($this->parent->getId() != $parent->getId()) {
+                $this->parent->removeChild($this);
+                $parent->addChild($this);
+            }
+        }
+
+        $this->parent = $parent;
     }
 
     /**
@@ -49,7 +62,8 @@ class Category
      */
     private $children;
     public function getChildren() { return $this->children; }
-    public function addChildren(Category $category) { $this->children->add($category); }
+    public function addChild(Category $category) { $this->children->add($category); }
+    public function removeChild(Category $category) { $this->children->removeElement($category); }
 
     public function __construct()
     {
