@@ -22,6 +22,35 @@
 
     </div>
 
+    <script id="edit-category-modal-view" type="text/template">
+        <div class="modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Edit "Category"</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="well bs-component">
+                        <form class="form-horizontal">
+                            <div class="form-group">
+                                <label for="title" class="col-lg-3 control-label">Name<span class="obligate">*</span></label>
+                                <div class="col-lg-9">
+                                    <input type="text" name="title" class="form-control" id="title">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="cancel-model-action" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <button id="submit-model-action" type="button" class="btn btn-primary">Save</button>
+                </div>
+                </div>
+            </div>
+        </div>
+    </script>
+
     <script id="create-category-modal-view" type="text/template">
         <div class="modal">
             <div class="modal-dialog">

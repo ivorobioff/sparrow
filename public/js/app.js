@@ -200,6 +200,7 @@ var MainDelegate = {
             home.find('a').click(function(e){
                 e.preventDefault();
                 render_categories(categories, null);
+                current_category = null;
             });
 
             var append_parents = function(item){
@@ -210,6 +211,7 @@ var MainDelegate = {
 
                 parent.find('a').click(function(e){
                     e.preventDefault();
+                    current_category = item;
                     render_categories(item.children, item);
                 });
                 append_parents(item.parent);
@@ -253,6 +255,26 @@ var MainDelegate = {
                             refresh_current_category();
                         });
                     }
+                });
+
+                category.find('#edit-action').click(function(e){
+                    e.preventDefault();
+
+                    var modal = new Modal($($('#edit-category-modal-view').html()));
+
+                    modal.onShow = function(){
+                        modal.form.el.find('[name="title"]').val(child.title);
+                    };
+
+                    modal.form.el.submit(function(e){
+                        modal.form.submit({ method: 'PATCH', url: '/categories/' + child.id }, e).done(function(){
+                            modal.hide();
+                            Show.success('The "' + child.title + '" category has been updated.');
+                            refresh_current_category();
+                        });
+                    });
+
+                    modal.show();
                 });
 
                 holder.append(category);
