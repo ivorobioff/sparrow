@@ -264,6 +264,21 @@ var MainDelegate = {
 
                     modal.onShow = function(){
                         modal.form.el.find('[name="title"]').val(child.title);
+                        
+                        var parent_title;
+
+                        if (child.parent === null){
+                            parent_title = 'Home';
+                        } else {
+                            parent_title = child.parent.title;
+                        }
+
+                        modal.form.el.find('#parent-title').text(parent_title);
+
+                        modal.form.el.find('#edit-action').click(function(e){
+                            e.preventDefault();
+                            modal.form.el.find('#categories-picker').toggle();
+                        });
                     };
 
                     modal.form.el.submit(function(e){
@@ -401,7 +416,7 @@ var MainDelegate = {
 
                          modal.form.el.submit(function(e){
                              modal.form.submit({ method: 'PATCH', url: '/locations/' + source.id }, e).done(function(){
-                                reload_locations();
+                                reload_locations(params);
                                 modal.hide();
                                 Show.success('The "' + source.name + '" location has been updated.');
                             });

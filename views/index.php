@@ -26,26 +26,71 @@
         <div class="modal">
             <div class="modal-dialog">
                 <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">Edit "Category"</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="well bs-component">
-                        <form class="form-horizontal">
-                            <div class="form-group">
-                                <label for="title" class="col-lg-3 control-label">Name<span class="obligate">*</span></label>
-                                <div class="col-lg-9">
-                                    <input type="text" name="title" class="form-control" id="title">
-                                </div>
-                            </div>
-                        </form>
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">Edit "Category"</h4>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button id="cancel-model-action" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                    <button id="submit-model-action" type="button" class="btn btn-primary">Save</button>
-                </div>
+                    <div class="modal-body">
+                        <div class="well bs-component">
+                            <form class="form-horizontal">
+                                <div class="form-group">
+                                    <label for="title" class="col-lg-3 control-label">Name<span
+                                            class="obligate">*</span></label>
+                                    <div class="col-lg-9">
+                                        <input type="text" name="title" class="form-control" id="title">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="title" class="col-lg-3 control-label">Parent</label>
+                                    <div class="col-lg-9">
+                                        <div>
+                                            <div class="list-group-item">
+                                                <div id="parent-title" class="pull-left"></div>
+                                                <a href="#" id="delete-action"
+                                                   class="fa fa-times pull-right cat-action "
+                                                   style="font-size: 16px;"></a>
+                                                <a href="#" id="edit-action" class="fa fa-pencil pull-right cat-action"
+                                                   style="font-size: 16px; margin-right: 3px;"></a>
+                                                <div class="clearfix"></div>
+                                            </div>
+                                        </div>
+                                        <div id="categories-picker" style="display: none">
+                                            <hr>
+                                            <div class="list-group-item">
+                                                <div class="pull-right">Home</div>
+                                                <a href="#" class="pull-left cat-action"><span
+                                                        class="fa fa-chevron-circle-left"></span></a>
+                                                <div class="clearfix"></div>
+                                            </div>
+                                            <div class="list-group-item">
+                                                <div class="pull-left">Pizza with Shit</div>
+                                                <a href="#" class="pull-right cat-action"><span
+                                                        class="fa fa-chevron-circle-right "></span></a>
+                                                <a href="#" class="pull-right cat-action"
+                                                   style="margin-right: 5px;"><span class="fa fa-check"></span></a>
+                                                <div class="clearfix"></div>
+                                            </div>
+                                            <div class="list-group-item">
+                                                <div class="pull-left">Vodka and Beer</div>
+
+                                                <a href="#" class="pull-right cat-action"><span
+                                                        class="fa fa-chevron-circle-right "></span></a>
+                                                <a href="#" class="pull-right cat-action"
+                                                   style="margin-right: 5px;"><span class="fa fa-check"></span></a>
+                                                <div class="clearfix"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="cancel-model-action" type="button" class="btn btn-default" data-dismiss="modal">
+                            Cancel
+                        </button>
+                        <button id="submit-model-action" type="button" class="btn btn-primary">Save</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -151,11 +196,11 @@
     </script>
 
     <script id="category-item-view" type="text/template">
-         <li class="list-group-item">
+         <div class="list-group-item">
             <a href="#" id="delete-action" class="fa fa-times pull-right cat-action" style="font-size: 16px;"></a>
             <a href="#" id="edit-action" class="fa fa-pencil pull-right cat-action" style="font-size: 16px; margin-right: 3px;"></a>
             <a href="#" id="open-category-action">{{ title }}</a>
-        </li>
+        </div>
     </script>
 
     <script id="location-item-view" type="text/template">
