@@ -10,6 +10,7 @@ body {
     color: #d9230f;
 }
 
+span.cat-action, 
 a.cat-action {
     color: #cccccc;
     text-decoration: none;
@@ -18,3 +19,12 @@ a.cat-action {
 a.cat-action:hover{
     color: #777777;
 }
+
+span.cat-action.possive {
+    color: #eeeeee;
+} 
+
+.cat-action.selected:hover,
+.cat-action.selected {
+    color: #555555;
+} 

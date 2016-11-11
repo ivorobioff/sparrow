@@ -56,29 +56,7 @@
                                         </div>
                                         <div id="categories-picker" style="display: none">
                                             <hr>
-                                            <div class="list-group-item">
-                                                <div class="pull-right">Home</div>
-                                                <a href="#" class="pull-left cat-action"><span
-                                                        class="fa fa-chevron-circle-left"></span></a>
-                                                <div class="clearfix"></div>
-                                            </div>
-                                            <div class="list-group-item">
-                                                <div class="pull-left">Pizza with Shit</div>
-                                                <a href="#" class="pull-right cat-action"><span
-                                                        class="fa fa-chevron-circle-right "></span></a>
-                                                <a href="#" class="pull-right cat-action"
-                                                   style="margin-right: 5px;"><span class="fa fa-check"></span></a>
-                                                <div class="clearfix"></div>
-                                            </div>
-                                            <div class="list-group-item">
-                                                <div class="pull-left">Vodka and Beer</div>
-
-                                                <a href="#" class="pull-right cat-action"><span
-                                                        class="fa fa-chevron-circle-right "></span></a>
-                                                <a href="#" class="pull-right cat-action"
-                                                   style="margin-right: 5px;"><span class="fa fa-check"></span></a>
-                                                <div class="clearfix"></div>
-                                            </div>
+                                            <div id="picker-container"></div>
                                         </div>
                                     </div>
                                 </div>

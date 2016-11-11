@@ -179,14 +179,13 @@ var MainDelegate = {
 
         // CATEGORIES
 
-        var current_category = null;
-        var categories = [];
-
         var template = $('#category-item-view').html();
         var holder = view.find('#categories-holder'); 
         var tree = view.find('#tree-holder');
 
-        var render_tree = function(category){
+        var walker = new CategoryWalker();
+
+        walker.renderHeader = function(category){
             tree.html('');
 
             if (category === null){
@@ -199,8 +198,7 @@ var MainDelegate = {
 
             home.find('a').click(function(e){
                 e.preventDefault();
-                render_categories(categories, null);
-                current_category = null;
+                walker.open(null);
             });
 
             var append_parents = function(item){
@@ -211,8 +209,7 @@ var MainDelegate = {
 
                 parent.find('a').click(function(e){
                     e.preventDefault();
-                    current_category = item;
-                    render_categories(item.children, item);
+                    walker.open(item.id);
                 });
                 append_parents(item.parent);
                 tree.append(parent);
@@ -223,7 +220,8 @@ var MainDelegate = {
             tree.append(Mustache.render('<li>{{ title }}</li>', { title: category.title }));
         };
 
-        var render_categories = function(children, parent){
+        walker.renderBody = function(children, parent){
+            
             if (children.length > 0){
                 holder.addClass('well');
                 holder.html('');
@@ -231,19 +229,13 @@ var MainDelegate = {
                 holder.removeClass('well');
                 holder.html('<p style="text-align: center">No Result</p>');
             }
-
-            render_tree(parent);
-
+            
             $.each(children, function(i, child){
-                child.parent = parent;
-
                 var category = $(Mustache.render($('#category-item-view').html(), child));
 
                 category.find('#open-category-action').click(function(e){
                     e.preventDefault();
-                    render_categories(child.children, child);
-                    render_tree(child);
-                    current_category = child;
+                    walker.open(child.id);
                 });
 
                 category.find('#delete-action').click(function(e){
@@ -252,7 +244,7 @@ var MainDelegate = {
                     if (confirm('Do you want to delete the "' + child.title + '" category?')){
                         backend({ method: 'DELETE', url: '/categories/' + child.id }).done(function(){
                             Show.success('The "' + child.title + '" category has been deleted.');
-                            refresh_current_category();
+                            walker.refresh();
                         });
                     }
                 });
@@ -264,28 +256,38 @@ var MainDelegate = {
 
                     modal.onShow = function(){
                         modal.form.el.find('[name="title"]').val(child.title);
-                        
-                        var parent_title;
-
-                        if (child.parent === null){
-                            parent_title = 'Home';
-                        } else {
-                            parent_title = child.parent.title;
-                        }
-
-                        modal.form.el.find('#parent-title').text(parent_title);
+                        modal.form.el.find('#parent-title').text(child.parent === null ? 'Home' : child.parent.title);
 
                         modal.form.el.find('#edit-action').click(function(e){
                             e.preventDefault();
                             modal.form.el.find('#categories-picker').toggle();
                         });
+
+                        var container = modal.form.el.find('#categories-picker #picker-container');
+                        var picker = new CategoryPicker(container);
+
+                        picker.onSelect = function(item){
+                            modal.form.el.find('#parent-title').text(item.title);
+                        };
+
+                        picker.onDeselect = function(){
+                            modal.form.el.find('#parent-title').text(child.parent === null ? 'Home' : child.parent.title);
+                        }
+                        
+                        if (child.parent !== null){
+                             picker.selected = child.parent;
+                        } else {
+                            picker.selected = null;
+                        }
+
+                        picker.load(walker.current, child);
                     };
 
                     modal.form.el.submit(function(e){
                         modal.form.submit({ method: 'PATCH', url: '/categories/' + child.id }, e).done(function(){
                             modal.hide();
                             Show.success('The "' + child.title + '" category has been updated.');
-                            refresh_current_category();
+                            walker.refresh();
                         });
                     });
 
@@ -296,33 +298,16 @@ var MainDelegate = {
             });
         };
 
-        backend({ method: 'GET', url: '/categories' }).done(function(data){
-            categories = data.data;
-            render_categories(categories, null);
-        });
-        
-        var refresh_current_category = function(){
-            if (current_category === null){
-                backend({ method: 'GET', url: '/categories' }).done(function(data){
-                    categories = data.data;
-                    render_categories(categories, null);
-                });
-            } else {
-                backend({ method: 'GET', url: '/categories/' + current_category.id }).done(function(data){
-                    current_category.children = data.children;     
-                    render_categories(current_category.children, current_category);
-                });
-            }
-        }
-
+        walker.open(null);
+      
         view.find('#create-category-action').click(function(e){
             e.preventDefault();
             
             var modal = new Modal($($('#create-category-modal-view').html()));
 
             modal.form.onDataReady = function(data){
-                if (current_category !== null){
-                    data.parent = current_category.id;
+                if (walker.current !== null){
+                    data.parent = walker.current.id;
                 }
             }
 
@@ -331,7 +316,7 @@ var MainDelegate = {
                 modal.form.submit({ method: 'POST', url: '/categories' }, e).done(function(data){
                     modal.hide();
                     Show.success('The "' + data.title + '" category has been created.');
-                    refresh_current_category();
+                    walker.refresh();
                 });
             });
 
@@ -640,6 +625,145 @@ var Session = {
         localStorage.removeItem('session');
     }
 };
+
+
+function CategoryWalker(){
+    return {
+        renderBody: function(children, parent) {},
+        renderHeader: function(category) {},
+        
+        current: null,
+
+        open: function(id){
+            var _this = this;
+            if (id === null){
+                backend({ method: 'GET', url: '/categories' }).done(function(data){
+                    _this.current = null;
+                    _this.renderBody(data.data, null);
+                    _this.renderHeader(null);
+                });
+            } else {
+                backend({ method: 'GET', url: '/categories/' + id }).done(function(data){
+                    _this.current = data;
+                    $.each(data.children, function(i, child){
+                        child.parent = data;
+                    });
+                    _this.renderBody(data.children, data);
+                    _this.renderHeader(data);
+                });
+            }
+        },
+
+        refresh: function(){
+            this.open(this.current.id);
+        }
+    }
+}
+
+function CategoryPicker(el) {
+    return {
+        el: el,
+        
+        exclude: null,
+        
+        selected: null,
+
+        onSelect: function(item){},
+        onDeselect: function(item){},
+
+        load: function(current, exclude){
+            var _this = this;
+
+            if (typeof exclude !== 'undefined'){
+                this.exclude = exclude;
+            }
+
+            var forward = '<div class="list-group-item"> \
+                            <div class="pull-left">{{ title }}</div> \
+                            <a href="#" id="next-action" class="pull-right cat-action"><span class="fa fa-chevron-circle-right "></span></a> \
+                            <a href="#" id="select-action" class="pull-right cat-action" style="margin-right: 5px;"><span class="fa fa-check"></span></a> \
+                            <div class="clearfix"></div> \
+                        </div>';
+
+            var backward = '<div class="list-group-item">\
+                                <div class="pull-right">{{ title }}</div>\
+                                <a href="#" id="back-action" class="pull-left cat-action"><span class="fa fa-chevron-circle-left"></span></a>\
+                                <div class="clearfix"></div>\
+                            </div>';
+
+            var walker = new CategoryWalker();
+
+            walker.renderBody = function (data, parent){
+                el.html('');
+                
+                if (parent !== null){
+                    var back;
+
+                    if (parent.parent !== null){
+                        back = $(Mustache.render(backward, { title: parent.parent.title }));
+                    } else {
+                        back = $(Mustache.render(backward, { title: 'Home' }));
+                    }
+
+                     back.find('#back-action').click(function(e){
+                        e.preventDefault();
+
+                        if (walker.current.parent === null){
+                            walker.open(null);
+                        } else {
+                            walker.open(walker.current.parent.id);
+                        }
+                    });
+
+                    el.append(back);
+                }
+
+                $.each(data, function(i, source){
+                    if (_this.exclude !== null && source.id == _this.exclude.id){
+                        return ;
+                    }
+                    source.parent = parent;
+                    var item = $(Mustache.render(forward, { title: source.title }));                    
+                    
+                    item.find('#select-action').click(function(e){
+                        e.preventDefault();
+
+                        if (_this.selected === null || (_this.selected.id != source.id)){
+                            _this.el.find('.list-group-item selected').removeClass('selected');
+                            $(this).addClass('selected');
+                            _this.onDeselect(_this.selected);
+                            _this.selected = source;
+                            _this.onSelect(source);
+                        } else {
+                            _this.onDeselect(_this.selected);
+                            _this.selected = null;
+                            $(this).removeClass('selected');
+                        }
+                    });
+
+                    if (source.children.length > 0){
+
+                        item.find('#next-action').click(function(e){
+                            e.preventDefault();
+                            walker.open(source.id);
+                        });
+                    } else {
+                        var next = item.find('#next-action');
+                        next.replaceWith($('<span class="pull-right cat-action possive"><span class="fa fa-chevron-circle-right"></span></span>'));
+                    }
+
+                    el.append(item);
+                });
+            };
+            
+            if (current === null){
+                walker.open(null);
+            } else {
+                walker.open(current.id);
+            }
+        }
+    };
+}
 
 function Modal(el) {
 
