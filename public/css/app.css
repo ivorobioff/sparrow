@@ -20,8 +20,10 @@ a.cat-action:hover{
     color: #777777;
 }
 
+a.cat-action.possive,
 span.cat-action.possive {
     color: #eeeeee;
+    cursor: default;
 } 
 
 .cat-action.selected:hover,

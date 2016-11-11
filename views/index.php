@@ -46,9 +46,6 @@
                                         <div>
                                             <div class="list-group-item">
                                                 <div id="parent-title" class="pull-left"></div>
-                                                <a href="#" id="delete-action"
-                                                   class="fa fa-times pull-right cat-action "
-                                                   style="font-size: 16px;"></a>
                                                 <a href="#" id="edit-action" class="fa fa-pencil pull-right cat-action"
                                                    style="font-size: 16px; margin-right: 3px;"></a>
                                                 <div class="clearfix"></div>

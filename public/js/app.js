@@ -251,6 +251,8 @@ var MainDelegate = {
 
                 category.find('#edit-action').click(function(e){
                     e.preventDefault();
+                    
+                    var selected_parent = child.parent;
 
                     var modal = new Modal($($('#edit-category-modal-view').html()));
 
@@ -268,26 +270,43 @@ var MainDelegate = {
 
                         picker.onSelect = function(item){
                             modal.form.el.find('#parent-title').text(item.title);
+                            selected_parent = item;
                         };
 
                         picker.onDeselect = function(){
                             modal.form.el.find('#parent-title').text(child.parent === null ? 'Home' : child.parent.title);
+                            selected_parent = child.parent;
                         }
                         
                         if (child.parent !== null){
                              picker.selected = child.parent;
                         } else {
-                            picker.selected = null;
+                            picker.selected = { id: null, title: 'Home'};
                         }
 
-                        picker.load(walker.current, child);
+                        picker.exclude = child;
+
+                        picker.load(walker.current === null ? null : walker.current.parent);
+                    };
+
+                    modal.form.onDataReady = function(data){
+                        if (selected_parent === null){
+                            data.parent = null;
+                        } else {
+                            data.parent = selected_parent.id;
+                        }
                     };
 
                     modal.form.el.submit(function(e){
                         modal.form.submit({ method: 'PATCH', url: '/categories/' + child.id }, e).done(function(){
                             modal.hide();
                             Show.success('The "' + child.title + '" category has been updated.');
-                            walker.refresh();
+
+                            if (selected_parent !== null){
+                                walker.open(selected_parent.id);
+                            } else {
+                                walker.open(null);
+                            }
                         });
                     });
 
@@ -655,7 +674,11 @@ function CategoryWalker(){
         },
 
         refresh: function(){
-            this.open(this.current.id);
+            if (this.current === null){
+                this.open(null);
+            } else {
+                this.open(this.current.id);
+            }
         }
     }
 }
@@ -671,12 +694,8 @@ function CategoryPicker(el) {
         onSelect: function(item){},
         onDeselect: function(item){},
 
-        load: function(current, exclude){
+        load: function(current){
             var _this = this;
-
-            if (typeof exclude !== 'undefined'){
-                this.exclude = exclude;
-            }
 
             var forward = '<div class="list-group-item"> \
                             <div class="pull-left">{{ title }}</div> \
@@ -686,8 +705,9 @@ function CategoryPicker(el) {
                         </div>';
 
             var backward = '<div class="list-group-item">\
-                                <div class="pull-right">{{ title }}</div>\
-                                <a href="#" id="back-action" class="pull-left cat-action"><span class="fa fa-chevron-circle-left"></span></a>\
+                                <div class="pull-right"><span id="next-step-holder">{{ next }} &nbsp;&nbsp;&nbsp; &larr;</span> &nbsp;&nbsp;&nbsp; {{ current }}</div>\
+                                <a href="#" id="select-action" class="pull-left cat-action" style="display: none;"><span class="fa fa-check"></span></a> \
+                                <a href="#" id="back-action" class="pull-left cat-action" style="display: none;"><span class="fa fa-chevron-circle-left"></span></a>\
                                 <div class="clearfix"></div>\
                             </div>';
 
@@ -695,61 +715,88 @@ function CategoryPicker(el) {
 
             walker.renderBody = function (data, parent){
                 el.html('');
-                
-                if (parent !== null){
-                    var back;
 
-                    if (parent.parent !== null){
-                        back = $(Mustache.render(backward, { title: parent.parent.title }));
+                function toggle(source, el){
+                    if (_this.selected === null || _this.selected.id != source.id){
+                        _this.el.find('.list-group-item .selected').removeClass('selected');
+                        el.addClass('selected');
+                        _this.onDeselect(_this.selected);
+                        _this.selected = source;
+                        _this.onSelect(source);
                     } else {
-                        back = $(Mustache.render(backward, { title: 'Home' }));
+                        _this.onDeselect(_this.selected);
+                        _this.selected = null;
+                        el.removeClass('selected');
                     }
+                }
+                
+                var title = 'Home';
+                var current = 'Home';
 
-                     back.find('#back-action').click(function(e){
+                if (parent !== null && parent.parent !== null){
+                    title = parent.parent.title;
+                }
+
+                if (parent !== null){
+                    current = parent.title;
+                }
+
+                var back = $(Mustache.render(backward, {next: title, current: current}));
+
+                if (parent === null){
+                    back.find('#next-step-holder').remove();
+                }
+
+                if (_this.selected && _this.selected.id === null) {
+                    back.find('#select-action').addClass('selected');
+                }
+
+                if (parent === null){
+                    back.find('#select-action').show().click(function(e){
+                        e.preventDefault();
+                        toggle({ id: null, title: 'Home'}, $(this));
+                    });  
+                } else {
+                    back.find('#back-action').show().click(function(e){
                         e.preventDefault();
 
-                        if (walker.current.parent === null){
+                        if (parent.parent === null){
                             walker.open(null);
                         } else {
-                            walker.open(walker.current.parent.id);
+                            walker.open(parent.parent.id);
                         }
                     });
-
-                    el.append(back);
                 }
+
+                el.append(back);
 
                 $.each(data, function(i, source){
                     if (_this.exclude !== null && source.id == _this.exclude.id){
                         return ;
                     }
-                    source.parent = parent;
-                    var item = $(Mustache.render(forward, { title: source.title }));                    
-                    
-                    item.find('#select-action').click(function(e){
-                        e.preventDefault();
 
-                        if (_this.selected === null || (_this.selected.id != source.id)){
-                            _this.el.find('.list-group-item selected').removeClass('selected');
-                            $(this).addClass('selected');
-                            _this.onDeselect(_this.selected);
-                            _this.selected = source;
-                            _this.onSelect(source);
-                        } else {
-                            _this.onDeselect(_this.selected);
-                            _this.selected = null;
-                            $(this).removeClass('selected');
-                        }
+                    source.parent = parent;
+
+                    var item = $(Mustache.render(forward, { title: source.title }));    
+
+                    if (_this.selected !== null && _this.selected.id == source.id){
+                        item.find('#select-action').addClass('selected');
+                    }          
+
+                    item.find('#select-action, #next-action').click(function(e){
+                        e.preventDefault();
+                    });     
+
+                    item.find('#select-action').click(function(e){
+                        toggle(source, $(this));
                     });
 
                     if (source.children.length > 0){
-
                         item.find('#next-action').click(function(e){
-                            e.preventDefault();
                             walker.open(source.id);
                         });
                     } else {
-                        var next = item.find('#next-action');
-                        next.replaceWith($('<span class="pull-right cat-action possive"><span class="fa fa-chevron-circle-right"></span></span>'));
+                        item.find('#next-action').addClass('possive')
                     }
 
                     el.append(item);
