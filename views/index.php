@@ -45,6 +45,7 @@
                                     <div class="col-lg-9">
                                         <div>
                                             <div class="list-group-item">
+
                                                 <div id="parent-title" class="pull-left"></div>
                                                 <a href="#" id="edit-action" class="fa fa-pencil pull-right cat-action"
                                                    style="font-size: 16px; margin-right: 3px;"></a>
